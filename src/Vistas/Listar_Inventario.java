@@ -164,7 +164,7 @@ public class Listar_Inventario extends JFrame {
 		JButton btnBuscar = new JButton("Buscar Codigo");
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				String Cod = txtCod.getText().trim().toUpperCase();
+				String Cod = txtCod.getText().trim();
 
 				if (Tabla.getModel().getRowCount() != 0) {
 
@@ -173,6 +173,7 @@ public class Listar_Inventario extends JFrame {
 						limipar();
 					}
 				}
+
 				boolean valida = buscarinv(Cod);
 				if (valida) {
 
@@ -181,9 +182,14 @@ public class Listar_Inventario extends JFrame {
 					if (valida2) {
 
 					} else {
-						buscarfin(Cod);
-					}
+						boolean valida3 = buscarfin(Cod);
+						if (valida3) {
 
+						} else {
+							 buscarini(Cod);
+							
+						}
+					}
 				}
 
 				txtCont.setText("" + cont);
@@ -595,10 +601,10 @@ public class Listar_Inventario extends JFrame {
 					+ "		on Ubicacion.idUbicacion = Inventario.Ubicacion_Bodega\r\n" + "inner join Destino\r\n"
 					+ "		on Destino.idDestino = Inventario.Destino_Actual\r\n" + "inner join Servidor\r\n"
 					+ "		on Servidor.idServidor = Inventario.Servidor_idServidor\r\n"
-					+ "where Inventario.idInventario  = ? AND Estado <> 'DE BAJA';";
+					+ "where Inventario.idInventario  = '" + cod + "' AND Estado <> 'DE BAJA';";
 
 			PreparedStatement stm = conn.prepareStatement(sql);
-			stm.setString(1, cod);
+
 			ResultSet rs = stm.executeQuery();
 
 			ResultSetMetaData rsm = rs.getMetaData();
@@ -611,7 +617,51 @@ public class Listar_Inventario extends JFrame {
 				mod.addRow(raws);
 				cont++;
 				return true;
+			} else {
+				return false;
+			}
 
+		} catch (Exception e) {
+			throw new IllegalArgumentException(e.getMessage());
+		}
+
+	}
+
+	private boolean buscarini(String cod) {
+		try {
+			String sql = "select\r\n " + "    Inventario.idInventario,\r\n" + "	   Cinta.Modelo,\r\n"
+					+ "	   Cinta.Marca,\r\n" + "	   Cinta.Categoria,\r\n" + "	   Inventario.Contenido,\r\n"
+					+ "	   Inventario.retencion,\r\n" + "	   Plataforma.Nombre,\r\n"
+					+ "	   Inventario.Fecha_Plataforma,\r\n" + "	   Inventario.Fecha_Exp,\r\n"
+					+ "	   Inventario.Fecha_ultim,\r\n" + "	   Pais.Nombre,\r\n"
+					+ "	   Ubicacion.Nombre_Ubicacion,\r\n" + "	   Destino.Nombre_Destino,\r\n"
+					+ "	   Inventario.Valija,\r\n" + "	   Inventario.Continuacion,\r\n"
+					+ "	   Inventario.Observaciones,\r\n" + "	   Inventario.Solicitado,\r\n"
+					+ "	   Inventario.Responsable,\r\n" + "	   Servidor.Nombre,\r\n"
+					+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio,\r\n"
+					+ "	   Inventario.Estado\r\n" + "from inventario \r\n" + "inner join Cinta\r\n"
+					+ "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n" + "inner join Plataforma\r\n"
+					+ "		on Plataforma.idPlataforma = Inventario.Plataforma_idPlataforma\r\n" + "inner join Pais\r\n"
+					+ "		on Pais.idPais = Inventario.Pais_idPais\r\n" + "inner join Ubicacion\r\n"
+					+ "		on Ubicacion.idUbicacion = Inventario.Ubicacion_Bodega\r\n" + "inner join Destino\r\n"
+					+ "		on Destino.idDestino = Inventario.Destino_Actual\r\n" + "inner join Servidor\r\n"
+					+ "		on Servidor.idServidor = Inventario.Servidor_idServidor\r\n"
+					+ "where Inventario.idInventario  = '" + cod + "%' AND Estado <> 'DE BAJA';";
+
+			PreparedStatement stm = conn.prepareStatement(sql);
+
+			ResultSet rs = stm.executeQuery();
+
+			ResultSetMetaData rsm = rs.getMetaData();
+			if (rs.next()) {
+				Object[] raws = new Object[rsm.getColumnCount()];
+				for (int i = 0; i < raws.length; i++) {
+					raws[i] = rs.getObject(i + 1);
+
+				}
+				mod.addRow(raws);
+				cont++;
+				return true;
 			} else {
 				return false;
 			}
@@ -642,7 +692,7 @@ public class Listar_Inventario extends JFrame {
 					+ "		on Ubicacion.idUbicacion = Inventario.Ubicacion_Bodega\r\n" + "inner join Destino\r\n"
 					+ "		on Destino.idDestino = Inventario.Destino_Actual\r\n" + "inner join Servidor\r\n"
 					+ "		on Servidor.idServidor = Inventario.Servidor_idServidor\r\n"
-					+ "where Inventario.idInventario  LIKE '" + cod + "%'  AND Estado <> 'DE BAJA';";
+					+ "where Inventario.idInventario  LIKE '%" + cod + "%'  AND Estado <> 'DE BAJA';";
 
 			PreparedStatement stm = conn.prepareStatement(sql);
 			ResultSet rs = stm.executeQuery();
@@ -670,7 +720,7 @@ public class Listar_Inventario extends JFrame {
 
 	}
 
-	private void buscarfin(String cod) {
+	private boolean buscarfin(String cod) {
 		try {
 
 			String sql = "select\r\n " + "    Inventario.idInventario,\r\n" + "	   Cinta.Modelo,\r\n"
@@ -706,9 +756,12 @@ public class Listar_Inventario extends JFrame {
 					mod.addRow(raws);
 					cont++;
 				}
+				return true;
 
 			} else {
+
 				JOptionPane.showMessageDialog(null, "no se encontro resultado");
+				return false;
 			}
 
 		} catch (Exception e) {
