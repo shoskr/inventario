@@ -274,7 +274,7 @@ public class ModificarVarios extends JFrame {
 					+ "		on Ubicacion.idUbicacion = Inventario.Ubicacion_Bodega\r\n" + "inner join Destino\r\n"
 					+ "		on Destino.idDestino = Inventario.Destino_Actual\r\n" + "inner join Servidor\r\n"
 					+ "		on Servidor.idServidor = Inventario.Servidor_idServidor\r\n"
-					+ "where Inventario.idInventario  = ?";
+					+ "where Inventario.idInventario  = ? AND Estado <> 'DE BAJA' ";
 
 			PreparedStatement stm = conn.prepareStatement(sql);
 			stm.setString(1, cod);
@@ -321,7 +321,7 @@ public class ModificarVarios extends JFrame {
 					+ "		on Ubicacion.idUbicacion = Inventario.Ubicacion_Bodega\r\n" + "inner join Destino\r\n"
 					+ "		on Destino.idDestino = Inventario.Destino_Actual\r\n" + "inner join Servidor\r\n"
 					+ "		on Servidor.idServidor = Inventario.Servidor_idServidor\r\n"
-					+ "where Inventario.idInventario  LIKE '" + cod + "%';";
+					+ "where Inventario.idInventario  LIKE '" + cod + "%' AND Estado <> 'DE BAJA';";
 
 			PreparedStatement stm = conn.prepareStatement(sql);
 			ResultSet rs = stm.executeQuery();
@@ -369,7 +369,7 @@ public class ModificarVarios extends JFrame {
 					+ "		on Ubicacion.idUbicacion = Inventario.Ubicacion_Bodega\r\n" + "inner join Destino\r\n"
 					+ "		on Destino.idDestino = Inventario.Destino_Actual\r\n" + "inner join Servidor\r\n"
 					+ "		on Servidor.idServidor = Inventario.Servidor_idServidor\r\n"
-					+ "where Inventario.idInventario  LIKE '%" + cod + "';";
+					+ "where Inventario.idInventario  LIKE '%" + cod + "' AND Estado <> 'DE BAJA';";
 
 			PreparedStatement stm = conn.prepareStatement(sql);
 			ResultSet rs = stm.executeQuery();
