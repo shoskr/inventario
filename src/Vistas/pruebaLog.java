@@ -10,7 +10,7 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 //import org.apache.log4j.PatternLayout;
 
-
+//http://migranitodejava.blogspot.ca/2011/07/log4j.html
 public class pruebaLog {
 
 	private final static Logger log = Logger.getLogger(pruebaLog.class);
