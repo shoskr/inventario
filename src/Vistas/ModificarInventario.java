@@ -11,7 +11,6 @@ import java.text.SimpleDateFormat;
 
 import java.util.ArrayList;
 
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -28,7 +27,6 @@ import java.awt.Toolkit;
 
 import javax.swing.JComboBox;
 
-
 import Class.*;
 import Controlador.*;
 
@@ -38,7 +36,6 @@ import javax.swing.UIManager;
 
 import java.util.Date;
 import java.awt.Color;
-
 
 public class ModificarInventario extends JFrame {
 
@@ -56,7 +53,7 @@ public class ModificarInventario extends JFrame {
 	private JTextField txtSoli;
 	private JTextField txtresp;
 	private JTextField txtLug;
-	private JComboBox<String> cboCinta, cboPlat, cboUbicacion, cboPais, cboServ, cbodesti, cbomes;
+	private JComboBox<String> cboCinta, cboPlat, cboUbicacion, cboPais, cboServ, cbodesti, cbomes, cboEstado;
 	private static SimpleDateFormat sdf = new SimpleDateFormat("YYYY/MM/dd");
 	private JTextField txtInv;
 	private Connection conn = Conexion.getConnectio();
@@ -91,14 +88,13 @@ public class ModificarInventario extends JFrame {
 		contentPane.setBackground(Color.WHITE);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		
-		
+
 		JButton btnVolver = new JButton("Volver");
 		btnVolver.setBounds(522, 313, 89, 23);
 		btnVolver.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//MenuP m = new MenuP();
-				//m.setVisible(true);
+				// MenuP m = new MenuP();
+				// m.setVisible(true);
 				dispose();
 			}
 		});
@@ -296,11 +292,11 @@ public class ModificarInventario extends JFrame {
 					;
 
 					String Lugar_Requerido = txtLug.getText().toUpperCase();
-					
-					int anio = Integer.parseInt(txtAnio.getText());					
-					
-					String mes_anio = cbomes.getSelectedItem() + " - " + anio;
 
+					int anio = Integer.parseInt(txtAnio.getText());
+
+					String mes_anio = cbomes.getSelectedItem() + " - " + anio;
+					String estado = cboEstado.getSelectedItem() + "";
 					inv.setCinta_idCinta(Cinta_idCinta);
 					inv.setContenido(Contenido);
 					inv.setRetencion(retencion);
@@ -319,9 +315,10 @@ public class ModificarInventario extends JFrame {
 					inv.setSolicitado(Solicitado);
 					inv.setLugar_Requerido(Lugar_Requerido);
 					inv.setMes_anio(mes_anio);
+					inv.setEstado(estado);
 
 					String cod = txtInv.getText().toUpperCase();
-					
+
 					boolean valida = CI.ActualizarInventario(inv, cod);
 
 					if (valida) {
@@ -337,6 +334,8 @@ public class ModificarInventario extends JFrame {
 					cboPlat.setSelectedIndex(0);
 					cboServ.setSelectedIndex(0);
 					cboUbicacion.setSelectedIndex(0);
+					cboEstado.setSelectedIndex(0);
+					cbomes.setSelectedIndex(0);
 					// restablecer txt
 					// txtcod.setText("");
 					txtcont.setText("");
@@ -347,6 +346,8 @@ public class ModificarInventario extends JFrame {
 					txtSoli.setText("");
 					txtresp.setText("");
 					txtLug.setText("");
+					txtInv.setText("");
+					txtAnio.setText("");
 
 					dateFult.setCalendar(null);
 					datefPlat.setCalendar(null);
@@ -400,8 +401,8 @@ public class ModificarInventario extends JFrame {
 
 		cbomes = new JComboBox<String>();
 		cbomes.setBounds(491, 227, 120, 21);
-		cbomes.setModel(new DefaultComboBoxModel<String>(new String[] { "ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO",
-				"JULIO", "AGOSTO", "SEPTIEMBRE", "NOVIEMBRE", "DICIOEMBRE" }));
+		cbomes.setModel(new DefaultComboBoxModel<String>(new String[] { "ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO",
+				"JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "NOVIEMBRE", "DICIOEMBRE" }));
 		contentPane.add(cbomes);
 
 		CargarCbos();
@@ -418,17 +419,27 @@ public class ModificarInventario extends JFrame {
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String cod = txtInv.getText();
-				
+
 				buscarinv(cod);
-				
+
 			}
 		});
 		contentPane.add(btnBuscar);
-		
+
 		txtAnio = new JTextField();
 		txtAnio.setBounds(637, 226, 64, 22);
 		contentPane.add(txtAnio);
 		txtAnio.setColumns(10);
+
+		cboEstado = new JComboBox<String>();
+		cboEstado.setModel(new DefaultComboBoxModel<String>(
+				new String[] { "DISPONIBLE", "ALMACENADA", "EN TRANCITO", "DE BAJA" }));
+		cboEstado.setBounds(491, 266, 137, 20);
+		contentPane.add(cboEstado);
+
+		JLabel label = new JLabel("Estado Cinta");
+		label.setBounds(360, 269, 268, 14);
+		contentPane.add(label);
 
 	}
 
@@ -443,7 +454,6 @@ public class ModificarInventario extends JFrame {
 		cboServ.addItem("Seleccionar");
 		cboUbicacion.addItem("Seleccionar");
 
-		
 		Cont_Cinta CC = new Cont_Cinta();
 		Cont_Pais CP = new Cont_Pais();
 		Cont_Plataforma CPL = new Cont_Plataforma();
@@ -482,22 +492,21 @@ public class ModificarInventario extends JFrame {
 
 		for (Cinta cin : listCin) {
 			cboCinta.addItem(cin.getIdCinta() + " - " + cin.getModelo() + " - " + cin.getMarca());
-		 
+
 		}
 
 	}
 
 	private void buscarinv(String cod) {
 		try {
-			String sql = "select * from inventario\r\n"
-					+ "where Inventario.idInventario  = ?";
+			String sql = "select * from inventario\r\n" + "where Inventario.idInventario  = ?";
 
 			PreparedStatement stm = conn.prepareStatement(sql);
 			stm.setString(1, cod);
 			ResultSet rs = stm.executeQuery();
 
 			if (rs.next()) {
-				
+
 				cboCinta.setSelectedIndex(rs.getInt(2));
 				cbodesti.setSelectedIndex(rs.getInt(11));
 				cboPais.setSelectedIndex(rs.getInt(9));
@@ -513,17 +522,29 @@ public class ModificarInventario extends JFrame {
 				txtresp.setText(rs.getString(16));
 				txtLug.setText(rs.getString(18));
 				String mesAnio = rs.getString(19);
-				String div[] = mesAnio.split("-");			
+				String div[] = mesAnio.split("-");
 				cbomes.setSelectedItem(div[0].replaceAll(" ", ""));
 				txtAnio.setText(div[1].replaceAll(" ", ""));
+				String est = rs.getString(20);
+
+				if (est.equals("DISPONIBLE")) {
+					cboEstado.setSelectedIndex(0);
+
+				} else if (est.equals("ALMACENADA")) {
+					cboEstado.setSelectedIndex(1);
+				} else if (est.equals("EN TRANCITO")) {
+					cboEstado.setSelectedIndex(2);
+				} else if (est.equals("DE BAJA")) {
+					cboEstado.setSelectedIndex(3);
+				}
+
 				Date ful = rs.getDate(6);
 				Date plat = rs.getDate(7);
 				Date exp = rs.getDate(8);
 				dateFult.setDate(ful);
 				datefPlat.setDate(plat);
 				dateFExp.setDate(exp);
-				
-				
+
 			} else {
 
 				JOptionPane.showMessageDialog(null, "No existe en inventario");

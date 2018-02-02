@@ -49,11 +49,12 @@ public class AgregarInventario extends JFrame {
 	private JTextField txtSoli;
 	private JTextField txtresp;
 	private JTextField txtLug;
-	private static JComboBox<String> cboCinta, cboPlat, cboUbicacion, cboPais, cboServ, cbodesti, cboAnio, cbomes;
+	private static JComboBox<String> cboCinta, cboPlat, cboUbicacion, cboPais, cboServ, cbodesti, cboAnio, cbomes, cboEstado;
 	private static SimpleDateFormat sdf = new SimpleDateFormat("YYYY/MM/dd");
 	private JDateChooser datefPlat = new JDateChooser();
 	private JDateChooser dateFExp = new JDateChooser();
 	private JDateChooser dateFult = new JDateChooser();
+	
 
 	/**
 	 * Launch the application.
@@ -339,6 +340,7 @@ public class AgregarInventario extends JFrame {
 
 					String Lugar_Requerido = txtLug.getText().toUpperCase();
 					String mes_anio = cbomes.getSelectedItem() + " - " + cboAnio.getSelectedItem();
+					String estado = cboEstado.getSelectedItem()+"";
 
 					inv.setIdInventario(idInventario);
 					inv.setCinta_idCinta(Cinta_idCinta);
@@ -359,6 +361,7 @@ public class AgregarInventario extends JFrame {
 					inv.setSolicitado(Solicitado);
 					inv.setLugar_Requerido(Lugar_Requerido);
 					inv.setMes_anio(mes_anio);
+					inv.setEstado(estado);
 
 					boolean valida = CI.ingresarInventario(inv);
 
@@ -448,6 +451,15 @@ public class AgregarInventario extends JFrame {
 		cboAnio = new JComboBox<String>();
 		cboAnio.setBounds(754, 216, 62, 21);
 		contentPane.add(cboAnio);
+		
+		JLabel lblEstadoCinta = new JLabel("Estado Cinta");
+		lblEstadoCinta.setBounds(417, 259, 75, 14);
+		contentPane.add(lblEstadoCinta);
+		
+		 cboEstado = new JComboBox<String>();
+		cboEstado.setModel(new DefaultComboBoxModel<String>(new String[] {"DISPONIBLE", "ALMACENADO", "EN TRANCITO", "DE BAJA"}));
+		cboEstado.setBounds(548, 256, 194, 20);
+		contentPane.add(cboEstado);
 
 		CargarCbos();
 	}

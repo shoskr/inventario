@@ -106,11 +106,11 @@ public class EliminarInventario extends JFrame {
 				new String[] { "Inventario", "Modelo", "Marca", "Categoria", "Contenido", "Retencion",
 						"Nombre plataforma", "Fecha Respaldo", "Fecha Expiracion", "Fecha Ultima Verificacion ", "Pais",
 						"Almacenamiento", "Destino Actual", "Valija", "Continuacion", "Observaciones", "Solicitado",
-						"Responsable", "Servidor", "Lugar Requerido", "Mes y Año" }) {
+						"Responsable", "Servidor", "Lugar Requerido", "Mes y Año", "Estado" }) {
 
 			private static final long serialVersionUID = 1L;
 			boolean[] columnEditables = new boolean[] { false, false, false, false, true, true, false, true, true, true,
-					false, false, false, true, true, true, true, true, false, true, true };
+					false, false, false, true, true, true, true, true, false, true, true, true };
 
 			public boolean isCellEditable(int row, int column) {
 				return columnEditables[column];
@@ -150,8 +150,16 @@ public class EliminarInventario extends JFrame {
 		JButton btnBuscar = new JButton("Buscar Codigo");
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				
 				String Cod = txtCod.getText().trim().toUpperCase();
 				if (Cod.length() != 0) {
+					
+					if(Tabla.getModel().getRowCount()!=0) {
+						int ax = JOptionPane.showConfirmDialog(null, "Desea Eliminar Busqueda Anterior");
+						if (ax == JOptionPane.YES_OPTION) {
+							limipar();
+						}
+					}
 					boolean valida = buscarinv(Cod);
 					if (valida) {
 
@@ -159,7 +167,7 @@ public class EliminarInventario extends JFrame {
 						boolean valida2 = buscar(Cod);
 						if (valida2) {
 
-						} 
+						}
 					}
 
 					txtCont.setText("" + cont);
@@ -182,12 +190,8 @@ public class EliminarInventario extends JFrame {
 		btnLimpiar = new JButton("Limpiar");
 		btnLimpiar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				while (mod.getRowCount() > 0) {
+				limipar();
 
-					mod.removeRow(0);
-					cont = 0;
-					txtCont.setText("" + cont);
-				}
 			}
 		});
 		btnLimpiar.setBounds(574, 11, 89, 23);
@@ -233,6 +237,12 @@ public class EliminarInventario extends JFrame {
 				String desde = sdf.format(Desde.getDate());
 				String Hastaa = sdf.format(Hasta.getDate());
 
+				if(Tabla.getModel().getRowCount()!=0) {
+					int ax = JOptionPane.showConfirmDialog(null, "Desea Eliminar Busqueda Anterior");
+					if (ax == JOptionPane.YES_OPTION) {
+						limipar();
+					}
+				}
 				buscarFechas(desde, Hastaa);
 				txtCont.setText("" + cont);
 
@@ -275,7 +285,8 @@ public class EliminarInventario extends JFrame {
 				DefaultTableModel tm = (DefaultTableModel) Tabla.getModel();
 				if (Tabla.getModel().getRowCount() != 0) {
 
-					int ax = JOptionPane.showConfirmDialog(null, "Se eliminaran " + cont + " Archivo/s, Esta seguro");
+					int ax = JOptionPane.showConfirmDialog(null,
+							"Se Daran de baja " + cont + " Archivo/s, Esta seguro");
 					if (ax == JOptionPane.YES_OPTION) {
 
 						int count = 0;
@@ -283,7 +294,7 @@ public class EliminarInventario extends JFrame {
 
 							String cod = String.valueOf(tm.getValueAt(i, 0)).toUpperCase();
 
-							boolean valida = Eliminar(cod);
+							boolean valida = ModifDeBAja(cod);
 							if (valida) {
 								while (mod.getRowCount() > 0) {
 
@@ -295,7 +306,7 @@ public class EliminarInventario extends JFrame {
 							count++;
 
 						}
-						JOptionPane.showMessageDialog(null, count + " Archivo/s Eliminados ");
+						JOptionPane.showMessageDialog(null, count + " Archivo/s Dados de Baja ");
 					}
 
 					else if (ax == JOptionPane.NO_OPTION) {
@@ -306,6 +317,7 @@ public class EliminarInventario extends JFrame {
 				}
 
 			}
+
 		});
 		btnNewButton.setBounds(215, 423, 176, 23);
 		contentPane.add(btnNewButton);
@@ -315,29 +327,43 @@ public class EliminarInventario extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 
 				DefaultTableModel tm = (DefaultTableModel) Tabla.getModel();
+				String cod = String.valueOf(tm.getValueAt(Tabla.getSelectedRow(), 0)).toUpperCase();
 				if (Tabla.getModel().getRowCount() != 0) {
 
-					int ax = JOptionPane.showConfirmDialog(null, "Se eliminaran " + cont + " Archivo/s, Esta seguro");
-					if (ax == JOptionPane.YES_OPTION) {
+					int axi2 = JOptionPane.showConfirmDialog(null,
+							"Precione Si para eliminar, No Para dar de Baja, o solo cancele la operacion  ");
+					if (axi2 == JOptionPane.YES_OPTION) {
+						int ax = JOptionPane.showConfirmDialog(null,
+								"Se Eliminara la Cinta numero  " + cod + " , Esta seguro");
+						if (ax == JOptionPane.YES_OPTION) {
 
-						String cod = String.valueOf(tm.getValueAt(Tabla.getSelectedRow(), 0)).toUpperCase();
-
-						boolean valida = Eliminar(cod);
-						if (valida) {
-							while (mod.getRowCount() > 0) {
+							boolean valida = Eliminar(cod);
+							if (valida) {
 
 								mod.removeRow(Tabla.getSelectedRow());
 								cont = cont - 1;
 								txtCont.setText("" + cont);
+
 							}
+							JOptionPane.showMessageDialog(null, " Archivo Eliminado ");
+						}
+
+						else if (ax == JOptionPane.NO_OPTION) {
+							return;
+						}
+					} else if (axi2 == JOptionPane.NO_OPTION) {
+
+						boolean valida = ModifDeBAja(cod);
+						if (valida) {
+
+							mod.removeRow(Tabla.getSelectedRow());
+							cont = cont - 1;
+							txtCont.setText("" + cont);
 
 						}
-						JOptionPane.showMessageDialog(null, " Archivo Eliminado ");
+						JOptionPane.showMessageDialog(null, " Cinta Dada De baja ");
 					}
 
-					else if (ax == JOptionPane.NO_OPTION) {
-						return;
-					}
 				} else {
 					JOptionPane.showMessageDialog(null, " No existen archivos para Eliminar");
 				}
@@ -346,6 +372,16 @@ public class EliminarInventario extends JFrame {
 		btnEliminarSeleccionado.setBounds(14, 353, 176, 24);
 		contentPane.add(btnEliminarSeleccionado);
 		contentPane.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[] { jScrollPane1, Tabla }));
+	}
+
+	protected void limipar() {
+		while (mod.getRowCount() > 0) {
+
+			mod.removeRow(0);
+			cont = 0;
+			txtCont.setText("" + cont);
+		}
+
 	}
 
 	private boolean buscarinv(String cod) {
@@ -359,15 +395,15 @@ public class EliminarInventario extends JFrame {
 					+ "	   Inventario.Valija,\r\n" + "	   Inventario.Continuacion,\r\n"
 					+ "	   Inventario.Observaciones,\r\n" + "	   Inventario.Solicitado,\r\n"
 					+ "	   Inventario.Responsable,\r\n" + "	   Servidor.Nombre,\r\n"
-					+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio\r\n" + "from inventario \r\n"
-					+ "inner join Cinta\r\n" + "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n"
-					+ "inner join Plataforma\r\n"
+					+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio,\r\n" + "  Inventario.Estado\r\n"
+					+ "from inventario \r\n" + "inner join Cinta\r\n"
+					+ "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n" + "inner join Plataforma\r\n"
 					+ "		on Plataforma.idPlataforma = Inventario.Plataforma_idPlataforma\r\n" + "inner join Pais\r\n"
 					+ "		on Pais.idPais = Inventario.Pais_idPais\r\n" + "inner join Ubicacion\r\n"
 					+ "		on Ubicacion.idUbicacion = Inventario.Ubicacion_Bodega\r\n" + "inner join Destino\r\n"
 					+ "		on Destino.idDestino = Inventario.Destino_Actual\r\n" + "inner join Servidor\r\n"
 					+ "		on Servidor.idServidor = Inventario.Servidor_idServidor\r\n"
-					+ "where Inventario.idInventario  = ?";
+					+ "where Inventario.idInventario  = ? AND Estado <> 'DE BAJA';";
 
 			PreparedStatement stm = conn.prepareStatement(sql);
 			stm.setString(1, cod);
@@ -406,7 +442,8 @@ public class EliminarInventario extends JFrame {
 					+ "	   Inventario.Valija,\r\n" + "	   Inventario.Continuacion,\r\n"
 					+ "	   Inventario.Observaciones,\r\n" + "	   Inventario.Solicitado,\r\n"
 					+ "	   Inventario.Responsable,\r\n" + "	   Servidor.Nombre,\r\n"
-					+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio\r\n" + "from inventario \r\n"
+					+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio,\r\n" + "  Inventario.Estado\r\n" 
+					+ "from inventario \r\n"
 					+ "inner join Cinta\r\n" + "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n"
 					+ "inner join Plataforma\r\n"
 					+ "		on Plataforma.idPlataforma = Inventario.Plataforma_idPlataforma\r\n" + "inner join Pais\r\n"
@@ -414,7 +451,7 @@ public class EliminarInventario extends JFrame {
 					+ "		on Ubicacion.idUbicacion = Inventario.Ubicacion_Bodega\r\n" + "inner join Destino\r\n"
 					+ "		on Destino.idDestino = Inventario.Destino_Actual\r\n" + "inner join Servidor\r\n"
 					+ "		on Servidor.idServidor = Inventario.Servidor_idServidor\r\n"
-					+ "where Inventario.idInventario  LIKE '%" + cod + "%';";
+					+ "where Inventario.idInventario  LIKE '%" + cod + "%' AND Estado <> 'DE BAJA';";
 
 			PreparedStatement stm = conn.prepareStatement(sql);
 			ResultSet rs = stm.executeQuery();
@@ -442,7 +479,7 @@ public class EliminarInventario extends JFrame {
 
 	}
 
-private void buscarFechas(String des, String hast) {
+	private void buscarFechas(String des, String hast) {
 		try {
 			String sql = "";
 			if (rdPlat.isSelected()) {
@@ -455,7 +492,8 @@ private void buscarFechas(String des, String hast) {
 						+ "	   Inventario.Valija,\r\n" + "	   Inventario.Continuacion,\r\n"
 						+ "	   Inventario.Observaciones,\r\n" + "	   Inventario.Solicitado,\r\n"
 						+ "	   Inventario.Responsable,\r\n" + "	   Servidor.Nombre,\r\n"
-						+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio\r\n" + "from inventario \r\n"
+						+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio,\r\n" + "  Inventario.Estado\r\n"
+						+ "from inventario \r\n"
 						+ "inner join Cinta\r\n" + "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n"
 						+ "inner join Plataforma\r\n"
 						+ "		on Plataforma.idPlataforma = Inventario.Plataforma_idPlataforma\r\n"
@@ -464,7 +502,7 @@ private void buscarFechas(String des, String hast) {
 						+ "		on Ubicacion.idUbicacion = Inventario.Ubicacion_Bodega\r\n" + "inner join Destino\r\n"
 						+ "		on Destino.idDestino = Inventario.Destino_Actual\r\n" + "inner join Servidor\r\n"
 						+ "		on Servidor.idServidor = Inventario.Servidor_idServidor\r\n"
-						+ "where  Inventario.Fecha_Plataforma >= ? and Inventario.Fecha_Plataforma <= ?";
+						+ "where  Inventario.Fecha_Plataforma >= ? and Inventario.Fecha_Plataforma <= ?  AND Estado <> 'DE BAJA';";
 
 			}
 
@@ -495,7 +533,6 @@ private void buscarFechas(String des, String hast) {
 
 	}
 
-	
 	private boolean Eliminar(String cod) {
 
 		try {
@@ -511,4 +548,20 @@ private void buscarFechas(String des, String hast) {
 			throw new IllegalArgumentException(e.getMessage());
 		}
 	}
+
+	private boolean ModifDeBAja(String cod) {
+		try {
+			String sql = "update Inventario set estado = 'DE BAJA' where idInventario =? ";
+
+			PreparedStatement pstm = conn.prepareCall(sql);
+			pstm.setString(1, cod);
+
+			int x = pstm.executeUpdate();
+			return x > 0 ? true : false;
+
+		} catch (Exception e) {
+			throw new IllegalArgumentException(e.getMessage());
+		}
+	}
+
 }

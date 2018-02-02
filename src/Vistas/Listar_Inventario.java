@@ -39,6 +39,7 @@ import javax.swing.JComboBox;
 import com.toedter.calendar.JDateChooser;
 import java.awt.Color;
 import java.awt.Dimension;
+import javax.swing.DefaultComboBoxModel;
 
 public class Listar_Inventario extends JFrame {
 
@@ -57,7 +58,7 @@ public class Listar_Inventario extends JFrame {
 	private ButtonGroup grupo = new ButtonGroup();
 	private JRadioButton rdPlat, rdEx, rdUlt;
 	private JDateChooser Desde, Hasta;
-	private JComboBox<String> cbodest, cboubi, cboPlat, cboServ;
+	private JComboBox<String> cbodest, cboubi, cboPlat, cboServ, cboEsta;
 	private static SimpleDateFormat sdf = new SimpleDateFormat("YYYY/MM/dd");
 	private JButton btnBuscarPlat;
 	private JButton btnBusServ;
@@ -88,7 +89,7 @@ public class Listar_Inventario extends JFrame {
 		setTitle("Listar Inventario");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Listar_Inventario.class.getResource("/img/scot.png")));
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		setBounds(100, 100, 706, 561);
+		setBounds(100, 100, 706, 594);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.WHITE);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -115,8 +116,8 @@ public class Listar_Inventario extends JFrame {
 		mod = new DefaultTableModel(new Object[][] {},
 				new String[] { "Inventario", "Modelo", "Marca", "Categoria", "Contenido", "Retencion",
 						"Nombre plataforma", "Fecha Respaldo", "Fecha Expiracion", "Fecha Ultima Verificacion ", "Pais",
-						"Almacenamiento", "Destino Actual", "Valija", "Continuacion", "Observaciones", "Solicitado", "Responsable",
-						"Servidor", "Lugar Requerido", "Mes y Año" , "Estado"}) {
+						"Almacenamiento", "Destino Actual", "Valija", "Continuacion", "Observaciones", "Solicitado",
+						"Responsable", "Servidor", "Lugar Requerido", "Mes y Año", "Estado" }) {
 
 			private static final long serialVersionUID = 1L;
 			boolean[] columnEditables = new boolean[] { false, false, false, false, true, true, false, true, true, true,
@@ -127,8 +128,6 @@ public class Listar_Inventario extends JFrame {
 			}
 
 		};
-		
-		
 
 		Tabla.setModel(mod);
 		Tabla.getColumnModel().getColumn(0).setPreferredWidth(80);
@@ -167,19 +166,26 @@ public class Listar_Inventario extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				String Cod = txtCod.getText().trim().toUpperCase();
 
+				if (Tabla.getModel().getRowCount() != 0) {
+
+					int ax = JOptionPane.showConfirmDialog(null, "Desea Eliminar Busqueda Anterior");
+					if (ax == JOptionPane.YES_OPTION) {
+						limipar();
+					}
+				}
 				boolean valida = buscarinv(Cod);
 				if (valida) {
 
 				} else {
 					boolean valida2 = buscarparte(Cod);
-					if(valida2) {
-						
-					}else {
+					if (valida2) {
+
+					} else {
 						buscarfin(Cod);
 					}
 
 				}
-				
+
 				txtCont.setText("" + cont);
 
 				txtCod.setText("");
@@ -187,11 +193,11 @@ public class Listar_Inventario extends JFrame {
 			}
 
 		});
-		btnBuscar.setBounds(168, 327, 139, 23);
+		btnBuscar.setBounds(164, 365, 139, 23);
 		contentPane.add(btnBuscar);
 
 		txtCod = new JTextField();
-		txtCod.setBounds(14, 327, 142, 20);
+		txtCod.setBounds(10, 365, 142, 20);
 		contentPane.add(txtCod);
 		txtCod.setColumns(10);
 
@@ -200,13 +206,11 @@ public class Listar_Inventario extends JFrame {
 
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					
-					String nombre = txtArchivo.getText().trim();
-					
-					String rutaArchivo = System.getProperty("user.home") + "/Desktop/"+nombre+".xls";
 
-					
-					
+					String nombre = txtArchivo.getText().trim();
+
+					String rutaArchivo = System.getProperty("user.home") + "/Desktop/" + nombre + ".xls";
+
 					File archivoXLS = new File(rutaArchivo);
 
 					if (archivoXLS.exists()) {
@@ -220,11 +224,9 @@ public class Listar_Inventario extends JFrame {
 
 					FileOutputStream archivo = new FileOutputStream(archivoXLS);
 					Sheet hoja = libro.createSheet("Inventario Cintas");
- 
-					
-					
+
 					for (int x = 0; x < mod.getRowCount() + 1; x++) {
-				
+
 						Row fila = hoja.createRow(x + 3);
 						for (int c = 0; c < mod.getColumnCount(); c++) {
 
@@ -242,9 +244,8 @@ public class Listar_Inventario extends JFrame {
 
 					libro.write(archivo);
 					archivo.close();
-					JOptionPane.showMessageDialog(null, "Ruta de archivo "+ rutaArchivo);
+					JOptionPane.showMessageDialog(null, "Ruta de archivo " + rutaArchivo);
 					Desktop.getDesktop().open(archivoXLS);
-					
 
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(null, "Error" + e.getMessage());
@@ -258,12 +259,7 @@ public class Listar_Inventario extends JFrame {
 		btnLimpiar = new JButton("Limpiar");
 		btnLimpiar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				while (mod.getRowCount() > 0) {
-
-					mod.removeRow(0);
-					cont = 0;
-					txtCont.setText("" + cont);
-				}
+				limipar();
 			}
 		});
 		btnLimpiar.setBounds(574, 11, 89, 23);
@@ -276,20 +272,27 @@ public class Listar_Inventario extends JFrame {
 				dispose();
 			}
 		});
-		btnVolver.setBounds(541, 459, 89, 23);
+		btnVolver.setBounds(541, 500, 89, 23);
 		contentPane.add(btnVolver);
 
 		cbodest = new JComboBox<String>();
-		cbodest.setBounds(14, 362, 142, 20);
+		cbodest.setBounds(10, 400, 142, 20);
 		contentPane.add(cbodest);
 
 		cboubi = new JComboBox<String>();
-		cboubi.setBounds(14, 397, 142, 20);
+		cboubi.setBounds(10, 435, 142, 20);
 		contentPane.add(cboubi);
 
 		JButton btnNewButton = new JButton("Buscar Destino");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if (Tabla.getModel().getRowCount() != 0) {
+
+					int ax = JOptionPane.showConfirmDialog(null, "Desea Eliminar Busqueda Anterior");
+					if (ax == JOptionPane.YES_OPTION) {
+						limipar();
+					}
+				}
 
 				int des = cbodest.getSelectedIndex();
 				buscarDes(des);
@@ -297,12 +300,19 @@ public class Listar_Inventario extends JFrame {
 				cbodest.setSelectedIndex(0);
 			}
 		});
-		btnNewButton.setBounds(168, 361, 139, 23);
+		btnNewButton.setBounds(164, 399, 139, 23);
 		contentPane.add(btnNewButton);
 
 		JButton btnNewButton_1 = new JButton("Buscar Ubicacion");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if (Tabla.getModel().getRowCount() != 0) {
+
+					int ax = JOptionPane.showConfirmDialog(null, "Desea Eliminar Busqueda Anterior");
+					if (ax == JOptionPane.YES_OPTION) {
+						limipar();
+					}
+				}
 
 				int ubi = cboubi.getSelectedIndex();
 				buscarUbi(ubi);
@@ -310,20 +320,20 @@ public class Listar_Inventario extends JFrame {
 				cboubi.setSelectedIndex(0);
 			}
 		});
-		btnNewButton_1.setBounds(168, 396, 139, 23);
+		btnNewButton_1.setBounds(164, 434, 139, 23);
 		contentPane.add(btnNewButton_1);
 
 		rdPlat = new JRadioButton("Fecha Respaldo");
 		rdPlat.setSelected(true);
-		rdPlat.setBounds(10, 429, 139, 23);
+		rdPlat.setBounds(10, 467, 139, 23);
 		contentPane.add(rdPlat);
 
 		rdEx = new JRadioButton("Fecha Expiracion");
-		rdEx.setBounds(151, 429, 135, 23);
+		rdEx.setBounds(147, 467, 135, 23);
 		contentPane.add(rdEx);
 
 		rdUlt = new JRadioButton("Fecha Ultima Verificacion");
-		rdUlt.setBounds(286, 429, 135, 23);
+		rdUlt.setBounds(282, 467, 135, 23);
 		contentPane.add(rdUlt);
 
 		grupo.add(rdPlat);
@@ -331,19 +341,19 @@ public class Listar_Inventario extends JFrame {
 		grupo.add(rdUlt);
 
 		Desde = new JDateChooser();
-		Desde.setBounds(14, 459, 120, 20);
+		Desde.setBounds(10, 497, 120, 20);
 		contentPane.add(Desde);
 
 		Hasta = new JDateChooser();
-		Hasta.setBounds(144, 459, 118, 20);
+		Hasta.setBounds(140, 497, 118, 20);
 		contentPane.add(Hasta);
 
 		JLabel lblDesde = new JLabel("Desde");
-		lblDesde.setBounds(51, 481, 46, 14);
+		lblDesde.setBounds(47, 519, 46, 14);
 		contentPane.add(lblDesde);
 
 		JLabel lblHasta = new JLabel("Hasta");
-		lblHasta.setBounds(183, 481, 46, 14);
+		lblHasta.setBounds(179, 519, 46, 14);
 		contentPane.add(lblHasta);
 
 		JButton btnBuscar_1 = new JButton("Buscar");
@@ -352,6 +362,14 @@ public class Listar_Inventario extends JFrame {
 				String desde = sdf.format(Desde.getDate());
 				String Hastaa = sdf.format(Hasta.getDate());
 
+				if (Tabla.getModel().getRowCount() != 0) {
+
+					int ax = JOptionPane.showConfirmDialog(null, "Desea Eliminar Busqueda Anterior");
+					if (ax == JOptionPane.YES_OPTION) {
+						limipar();
+					}
+				}
+
 				buscarFechas(desde, Hastaa);
 				txtCont.setText("" + cont);
 
@@ -359,32 +377,48 @@ public class Listar_Inventario extends JFrame {
 				Hasta.setCalendar(null);
 			}
 		});
-		btnBuscar_1.setBounds(285, 459, 89, 23);
+		btnBuscar_1.setBounds(281, 497, 89, 23);
 		contentPane.add(btnBuscar_1);
 
 		cboPlat = new JComboBox<String>();
-		cboPlat.setBounds(319, 362, 157, 20);
+		cboPlat.setBounds(315, 400, 157, 20);
 		contentPane.add(cboPlat);
 
 		cboServ = new JComboBox<String>();
-		cboServ.setBounds(319, 397, 157, 20);
+		cboServ.setBounds(315, 435, 157, 20);
 		contentPane.add(cboServ);
 
 		btnBuscarPlat = new JButton("Buscar Plataforma");
 		btnBuscarPlat.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int plat = cboPlat.getSelectedIndex();
+				if (Tabla.getModel().getRowCount() != 0) {
+
+					int ax = JOptionPane.showConfirmDialog(null, "Desea Eliminar Busqueda Anterior");
+					if (ax == JOptionPane.YES_OPTION) {
+						limipar();
+					}
+				}
+
 				buscaPlat(plat);
 				txtCont.setText("" + cont);
 				cboPlat.setSelectedIndex(0);
 			}
 		});
-		btnBuscarPlat.setBounds(495, 359, 168, 23);
+		btnBuscarPlat.setBounds(495, 400, 168, 23);
 		contentPane.add(btnBuscarPlat);
 
 		btnBusServ = new JButton("Buscar Servidor");
 		btnBusServ.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if (Tabla.getModel().getRowCount() != 0) {
+
+					int ax = JOptionPane.showConfirmDialog(null, "Desea Eliminar Busqueda Anterior");
+					if (ax == JOptionPane.YES_OPTION) {
+						limipar();
+					}
+				}
+
 				int serv = cboServ.getSelectedIndex();
 				buscaServ(serv);
 				txtCont.setText("" + cont);
@@ -392,7 +426,7 @@ public class Listar_Inventario extends JFrame {
 				cboServ.setSelectedIndex(0);
 			}
 		});
-		btnBusServ.setBounds(495, 394, 168, 23);
+		btnBusServ.setBounds(495, 435, 168, 23);
 		contentPane.add(btnBusServ);
 
 		JLabel lblCintasEncontradas = new JLabel("Cintas Encontradas");
@@ -410,27 +444,49 @@ public class Listar_Inventario extends JFrame {
 		JButton btnQuitar = new JButton("Quitar");
 		btnQuitar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-			
-				
-				
+
 				mod.removeRow(Tabla.getSelectedRow());
-				
-				
+
 				cont = cont - 1;
 				txtCont.setText("" + cont);
 			}
 		});
 		btnQuitar.setBounds(468, 10, 94, 24);
 		contentPane.add(btnQuitar);
-		
+
 		txtArchivo = new JTextField();
 		txtArchivo.setBounds(8, 6, 122, 28);
 		contentPane.add(txtArchivo);
 		txtArchivo.setColumns(10);
-		
+
 		JLabel lblNombreArchivo = new JLabel("Nombre Busqueda");
 		lblNombreArchivo.setBounds(140, 14, 118, 16);
 		contentPane.add(lblNombreArchivo);
+
+		cboEsta = new JComboBox<String>();
+		cboEsta.setModel(new DefaultComboBoxModel<String>(
+				new String[] { "TODOS", "DISPONIBLE", "ALMACENADA", "EN TRANCITO", "DE BAJA" }));
+		cboEsta.setBounds(313, 366, 159, 20);
+		contentPane.add(cboEsta);
+
+		JButton btnNewButton_2 = new JButton("Buscar Situacion Cinta");
+		btnNewButton_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				String estado = cboEsta.getSelectedItem() + "";
+				if (Tabla.getModel().getRowCount() != 0) {
+
+					int ax = JOptionPane.showConfirmDialog(null, "Desea Eliminar Busqueda Anterior");
+					if (ax == JOptionPane.YES_OPTION) {
+						limipar();
+					}
+				}
+
+				BuscarEstado(estado);
+			}
+
+		});
+		btnNewButton_2.setBounds(495, 365, 168, 23);
+		contentPane.add(btnNewButton_2);
 		contentPane.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[] { jScrollPane1, Tabla }));
 	}
 
@@ -477,16 +533,14 @@ public class Listar_Inventario extends JFrame {
 					+ "	   Inventario.Valija,\r\n" + "	   Inventario.Continuacion,\r\n"
 					+ "	   Inventario.Observaciones,\r\n" + "	   Inventario.Solicitado,\r\n"
 					+ "	   Inventario.Responsable,\r\n" + "	   Servidor.Nombre,\r\n"
-					+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio,\r\n" 
-					+ "	   Inventario.Estado\r\n"
-					+ "from inventario \r\n"
-					+ "inner join Cinta\r\n" + "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n"
-					+ "inner join Plataforma\r\n"
+					+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio,\r\n"
+					+ "	   Inventario.Estado\r\n" + "from inventario \r\n" + "inner join Cinta\r\n"
+					+ "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n" + "inner join Plataforma\r\n"
 					+ "		on Plataforma.idPlataforma = Inventario.Plataforma_idPlataforma\r\n" + "inner join Pais\r\n"
 					+ "		on Pais.idPais = Inventario.Pais_idPais\r\n" + "inner join Ubicacion\r\n"
 					+ "		on Ubicacion.idUbicacion = Inventario.Ubicacion_Bodega\r\n" + "inner join Destino\r\n"
 					+ "		on Destino.idDestino = Inventario.Destino_Actual\r\n" + "inner join Servidor\r\n"
-					+ "		on Servidor.idServidor = Inventario.Servidor_idServidor";
+					+ "		on Servidor.idServidor = Inventario.Servidor_idServidor WHERE  Estado <> 'DE BAJA';";
 
 			PreparedStatement stm = conn.prepareStatement(sql);
 			ResultSet rs = stm.executeQuery();
@@ -508,6 +562,20 @@ public class Listar_Inventario extends JFrame {
 
 	}
 
+	private void limipar() {
+		try {
+			while (mod.getRowCount() > 0) {
+
+				mod.removeRow(0);
+				cont = 0;
+				txtCont.setText("" + cont);
+			}
+		} catch (Exception e) {
+			throw new IllegalArgumentException(e.getMessage());
+		}
+
+	}
+
 	private boolean buscarinv(String cod) {
 		try {
 			String sql = "select\r\n " + "    Inventario.idInventario,\r\n" + "	   Cinta.Modelo,\r\n"
@@ -519,15 +587,15 @@ public class Listar_Inventario extends JFrame {
 					+ "	   Inventario.Valija,\r\n" + "	   Inventario.Continuacion,\r\n"
 					+ "	   Inventario.Observaciones,\r\n" + "	   Inventario.Solicitado,\r\n"
 					+ "	   Inventario.Responsable,\r\n" + "	   Servidor.Nombre,\r\n"
-					+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio\r\n" + "from inventario \r\n"
-					+ "inner join Cinta\r\n" + "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n"
-					+ "inner join Plataforma\r\n"
+					+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio,\r\n"
+					+ "	   Inventario.Estado\r\n" + "from inventario \r\n" + "inner join Cinta\r\n"
+					+ "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n" + "inner join Plataforma\r\n"
 					+ "		on Plataforma.idPlataforma = Inventario.Plataforma_idPlataforma\r\n" + "inner join Pais\r\n"
 					+ "		on Pais.idPais = Inventario.Pais_idPais\r\n" + "inner join Ubicacion\r\n"
 					+ "		on Ubicacion.idUbicacion = Inventario.Ubicacion_Bodega\r\n" + "inner join Destino\r\n"
 					+ "		on Destino.idDestino = Inventario.Destino_Actual\r\n" + "inner join Servidor\r\n"
 					+ "		on Servidor.idServidor = Inventario.Servidor_idServidor\r\n"
-					+ "where Inventario.idInventario  = ?";
+					+ "where Inventario.idInventario  = ? AND Estado <> 'DE BAJA';";
 
 			PreparedStatement stm = conn.prepareStatement(sql);
 			stm.setString(1, cod);
@@ -566,15 +634,15 @@ public class Listar_Inventario extends JFrame {
 					+ "	   Inventario.Valija,\r\n" + "	   Inventario.Continuacion,\r\n"
 					+ "	   Inventario.Observaciones,\r\n" + "	   Inventario.Solicitado,\r\n"
 					+ "	   Inventario.Responsable,\r\n" + "	   Servidor.Nombre,\r\n"
-					+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio\r\n" + "from inventario \r\n"
-					+ "inner join Cinta\r\n" + "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n"
-					+ "inner join Plataforma\r\n"
+					+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio,\r\n"
+					+ "	   Inventario.Estado\r\n" + "from inventario \r\n" + "inner join Cinta\r\n"
+					+ "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n" + "inner join Plataforma\r\n"
 					+ "		on Plataforma.idPlataforma = Inventario.Plataforma_idPlataforma\r\n" + "inner join Pais\r\n"
 					+ "		on Pais.idPais = Inventario.Pais_idPais\r\n" + "inner join Ubicacion\r\n"
 					+ "		on Ubicacion.idUbicacion = Inventario.Ubicacion_Bodega\r\n" + "inner join Destino\r\n"
 					+ "		on Destino.idDestino = Inventario.Destino_Actual\r\n" + "inner join Servidor\r\n"
 					+ "		on Servidor.idServidor = Inventario.Servidor_idServidor\r\n"
-					+ "where Inventario.idInventario  LIKE '" + cod + "%';";
+					+ "where Inventario.idInventario  LIKE '" + cod + "%'  AND Estado <> 'DE BAJA';";
 
 			PreparedStatement stm = conn.prepareStatement(sql);
 			ResultSet rs = stm.executeQuery();
@@ -601,7 +669,7 @@ public class Listar_Inventario extends JFrame {
 		}
 
 	}
-	
+
 	private void buscarfin(String cod) {
 		try {
 
@@ -614,15 +682,15 @@ public class Listar_Inventario extends JFrame {
 					+ "	   Inventario.Valija,\r\n" + "	   Inventario.Continuacion,\r\n"
 					+ "	   Inventario.Observaciones,\r\n" + "	   Inventario.Solicitado,\r\n"
 					+ "	   Inventario.Responsable,\r\n" + "	   Servidor.Nombre,\r\n"
-					+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio\r\n" + "from inventario \r\n"
-					+ "inner join Cinta\r\n" + "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n"
-					+ "inner join Plataforma\r\n"
+					+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio,\r\n"
+					+ "	   Inventario.Estado\r\n" + "from inventario \r\n" + "inner join Cinta\r\n"
+					+ "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n" + "inner join Plataforma\r\n"
 					+ "		on Plataforma.idPlataforma = Inventario.Plataforma_idPlataforma\r\n" + "inner join Pais\r\n"
 					+ "		on Pais.idPais = Inventario.Pais_idPais\r\n" + "inner join Ubicacion\r\n"
 					+ "		on Ubicacion.idUbicacion = Inventario.Ubicacion_Bodega\r\n" + "inner join Destino\r\n"
 					+ "		on Destino.idDestino = Inventario.Destino_Actual\r\n" + "inner join Servidor\r\n"
 					+ "		on Servidor.idServidor = Inventario.Servidor_idServidor\r\n"
-					+ "where Inventario.idInventario  LIKE '%" + cod + "';";
+					+ "where Inventario.idInventario  LIKE '%" + cod + "' AND Estado <> 'DE BAJA';";
 
 			PreparedStatement stm = conn.prepareStatement(sql);
 			ResultSet rs = stm.executeQuery();
@@ -639,7 +707,6 @@ public class Listar_Inventario extends JFrame {
 					cont++;
 				}
 
-				
 			} else {
 				JOptionPane.showMessageDialog(null, "no se encontro resultado");
 			}
@@ -661,15 +728,15 @@ public class Listar_Inventario extends JFrame {
 					+ "	   Inventario.Valija,\r\n" + "	   Inventario.Continuacion,\r\n"
 					+ "	   Inventario.Observaciones,\r\n" + "	   Inventario.Solicitado,\r\n"
 					+ "	   Inventario.Responsable,\r\n" + "	   Servidor.Nombre,\r\n"
-					+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio\r\n" + "from inventario \r\n"
-					+ "inner join Cinta\r\n" + "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n"
-					+ "inner join Plataforma\r\n"
+					+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio,\r\n"
+					+ "	   Inventario.Estado\r\n" + "from inventario \r\n" + "inner join Cinta\r\n"
+					+ "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n" + "inner join Plataforma\r\n"
 					+ "		on Plataforma.idPlataforma = Inventario.Plataforma_idPlataforma\r\n" + "inner join Pais\r\n"
 					+ "		on Pais.idPais = Inventario.Pais_idPais\r\n" + "inner join Ubicacion\r\n"
 					+ "		on Ubicacion.idUbicacion = Inventario.Ubicacion_Bodega\r\n" + "inner join Destino\r\n"
 					+ "		on Destino.idDestino = Inventario.Destino_Actual\r\n" + "inner join Servidor\r\n"
 					+ "		on Servidor.idServidor = Inventario.Servidor_idServidor\r\n"
-					+ "where Inventario.Destino_Actual  = ?";
+					+ "where Inventario.Destino_Actual  = ? AND Estado <> 'DE BAJA';";
 
 			PreparedStatement stm = conn.prepareStatement(sql);
 			stm.setInt(1, dest);
@@ -707,15 +774,15 @@ public class Listar_Inventario extends JFrame {
 					+ "	   Inventario.Valija,\r\n" + "	   Inventario.Continuacion,\r\n"
 					+ "	   Inventario.Observaciones,\r\n" + "	   Inventario.Solicitado,\r\n"
 					+ "	   Inventario.Responsable,\r\n" + "	   Servidor.Nombre,\r\n"
-					+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio\r\n" + "from inventario \r\n"
-					+ "inner join Cinta\r\n" + "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n"
-					+ "inner join Plataforma\r\n"
+					+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio,\r\n"
+					+ "	   Inventario.Estado\r\n" + "from inventario \r\n" + "inner join Cinta\r\n"
+					+ "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n" + "inner join Plataforma\r\n"
 					+ "		on Plataforma.idPlataforma = Inventario.Plataforma_idPlataforma\r\n" + "inner join Pais\r\n"
 					+ "		on Pais.idPais = Inventario.Pais_idPais\r\n" + "inner join Ubicacion\r\n"
 					+ "		on Ubicacion.idUbicacion = Inventario.Ubicacion_Bodega\r\n" + "inner join Destino\r\n"
 					+ "		on Destino.idDestino = Inventario.Destino_Actual\r\n" + "inner join Servidor\r\n"
 					+ "		on Servidor.idServidor = Inventario.Servidor_idServidor\r\n"
-					+ "where Inventario.Ubicacion_Bodega  = ?";
+					+ "where Inventario.Ubicacion_Bodega  = ? AND Estado <> 'DE BAJA';";
 
 			PreparedStatement stm = conn.prepareStatement(sql);
 			stm.setInt(1, ubi);
@@ -755,15 +822,15 @@ public class Listar_Inventario extends JFrame {
 					+ "	   Inventario.Valija,\r\n" + "	   Inventario.Continuacion,\r\n"
 					+ "	   Inventario.Observaciones,\r\n" + "	   Inventario.Solicitado,\r\n"
 					+ "	   Inventario.Responsable,\r\n" + "	   Servidor.Nombre,\r\n"
-					+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio\r\n" + "from inventario \r\n"
-					+ "inner join Cinta\r\n" + "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n"
-					+ "inner join Plataforma\r\n"
+					+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio,\r\n"
+					+ "	   Inventario.Estado\r\n" + "from inventario \r\n" + "inner join Cinta\r\n"
+					+ "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n" + "inner join Plataforma\r\n"
 					+ "		on Plataforma.idPlataforma = Inventario.Plataforma_idPlataforma\r\n" + "inner join Pais\r\n"
 					+ "		on Pais.idPais = Inventario.Pais_idPais\r\n" + "inner join Ubicacion\r\n"
 					+ "		on Ubicacion.idUbicacion = Inventario.Ubicacion_Bodega\r\n" + "inner join Destino\r\n"
 					+ "		on Destino.idDestino = Inventario.Destino_Actual\r\n" + "inner join Servidor\r\n"
 					+ "		on Servidor.idServidor = Inventario.Servidor_idServidor\r\n"
-					+ "where Inventario.Plataforma_idPlataforma  = ?";
+					+ "where Inventario.Plataforma_idPlataforma  = ? AND Estado <> 'DE BAJA';";
 
 			PreparedStatement stm = conn.prepareStatement(sql);
 			stm.setInt(1, plat);
@@ -802,15 +869,15 @@ public class Listar_Inventario extends JFrame {
 					+ "	   Inventario.Valija,\r\n" + "	   Inventario.Continuacion,\r\n"
 					+ "	   Inventario.Observaciones,\r\n" + "	   Inventario.Solicitado,\r\n"
 					+ "	   Inventario.Responsable,\r\n" + "	   Servidor.Nombre,\r\n"
-					+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio\r\n" + "from inventario \r\n"
-					+ "inner join Cinta\r\n" + "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n"
-					+ "inner join Plataforma\r\n"
+					+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio,\r\n"
+					+ "	   Inventario.Estado\r\n" + "from inventario \r\n" + "inner join Cinta\r\n"
+					+ "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n" + "inner join Plataforma\r\n"
 					+ "		on Plataforma.idPlataforma = Inventario.Plataforma_idPlataforma\r\n" + "inner join Pais\r\n"
 					+ "		on Pais.idPais = Inventario.Pais_idPais\r\n" + "inner join Ubicacion\r\n"
 					+ "		on Ubicacion.idUbicacion = Inventario.Ubicacion_Bodega\r\n" + "inner join Destino\r\n"
 					+ "		on Destino.idDestino = Inventario.Destino_Actual\r\n" + "inner join Servidor\r\n"
 					+ "		on Servidor.idServidor = Inventario.Servidor_idServidor\r\n"
-					+ "where Inventario.Servidor_idServidor  = ?";
+					+ "where Inventario.Servidor_idServidor  = ? AND Estado <> 'DE BAJA';";
 
 			PreparedStatement stm = conn.prepareStatement(sql);
 			stm.setInt(1, serv);
@@ -850,16 +917,16 @@ public class Listar_Inventario extends JFrame {
 						+ "	   Inventario.Valija,\r\n" + "	   Inventario.Continuacion,\r\n"
 						+ "	   Inventario.Observaciones,\r\n" + "	   Inventario.Solicitado,\r\n"
 						+ "	   Inventario.Responsable,\r\n" + "	   Servidor.Nombre,\r\n"
-						+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio\r\n" + "from inventario \r\n"
-						+ "inner join Cinta\r\n" + "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n"
-						+ "inner join Plataforma\r\n"
+						+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio,\r\n"
+						+ "	   Inventario.Estado\r\n" + "from inventario \r\n" + "inner join Cinta\r\n"
+						+ "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n" + "inner join Plataforma\r\n"
 						+ "		on Plataforma.idPlataforma = Inventario.Plataforma_idPlataforma\r\n"
 						+ "inner join Pais\r\n" + "		on Pais.idPais = Inventario.Pais_idPais\r\n"
 						+ "inner join Ubicacion\r\n"
 						+ "		on Ubicacion.idUbicacion = Inventario.Ubicacion_Bodega\r\n" + "inner join Destino\r\n"
 						+ "		on Destino.idDestino = Inventario.Destino_Actual\r\n" + "inner join Servidor\r\n"
 						+ "		on Servidor.idServidor = Inventario.Servidor_idServidor\r\n"
-						+ "where  Inventario.Fecha_Plataforma >= ? and Inventario.Fecha_Plataforma <= ?";
+						+ "where  Inventario.Fecha_Plataforma >= ? and Inventario.Fecha_Plataforma <= ? AND Estado <> 'DE BAJA';";
 
 			} else if (rdEx.isSelected()) {
 				sql = "select\r\n " + "    Inventario.idInventario,\r\n" + "	   Cinta.Modelo,\r\n"
@@ -871,16 +938,16 @@ public class Listar_Inventario extends JFrame {
 						+ "	   Inventario.Valija,\r\n" + "	   Inventario.Continuacion,\r\n"
 						+ "	   Inventario.Observaciones,\r\n" + "	   Inventario.Solicitado,\r\n"
 						+ "	   Inventario.Responsable,\r\n" + "	   Servidor.Nombre,\r\n"
-						+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio\r\n" + "from inventario \r\n"
-						+ "inner join Cinta\r\n" + "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n"
-						+ "inner join Plataforma\r\n"
+						+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio,\r\n"
+						+ "	   Inventario.Estado\r\n" + "from inventario \r\n" + "inner join Cinta\r\n"
+						+ "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n" + "inner join Plataforma\r\n"
 						+ "		on Plataforma.idPlataforma = Inventario.Plataforma_idPlataforma\r\n"
 						+ "inner join Pais\r\n" + "		on Pais.idPais = Inventario.Pais_idPais\r\n"
 						+ "inner join Ubicacion\r\n"
 						+ "		on Ubicacion.idUbicacion = Inventario.Ubicacion_Bodega\r\n" + "inner join Destino\r\n"
 						+ "		on Destino.idDestino = Inventario.Destino_Actual\r\n" + "inner join Servidor\r\n"
 						+ "		on Servidor.idServidor = Inventario.Servidor_idServidor\r\n"
-						+ "where  Inventario.Fecha_Exp >= ? and Inventario.Fecha_Exp <= ?";
+						+ "where  Inventario.Fecha_Exp >= ? and Inventario.Fecha_Exp <= ? AND Estado <> 'DE BAJA';";
 
 			} else if (rdUlt.isSelected()) {
 				sql = "select\r\n " + "    Inventario.idInventario,\r\n" + "	   Cinta.Modelo,\r\n"
@@ -892,16 +959,16 @@ public class Listar_Inventario extends JFrame {
 						+ "	   Inventario.Valija,\r\n" + "	   Inventario.Continuacion,\r\n"
 						+ "	   Inventario.Observaciones,\r\n" + "	   Inventario.Solicitado,\r\n"
 						+ "	   Inventario.Responsable,\r\n" + "	   Servidor.Nombre,\r\n"
-						+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio\r\n" + "from inventario \r\n"
-						+ "inner join Cinta\r\n" + "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n"
-						+ "inner join Plataforma\r\n"
+						+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio,\r\n"
+						+ "	   Inventario.Estado\r\n" + "from inventario \r\n" + "inner join Cinta\r\n"
+						+ "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n" + "inner join Plataforma\r\n"
 						+ "		on Plataforma.idPlataforma = Inventario.Plataforma_idPlataforma\r\n"
 						+ "inner join Pais\r\n" + "		on Pais.idPais = Inventario.Pais_idPais\r\n"
 						+ "inner join Ubicacion\r\n"
 						+ "		on Ubicacion.idUbicacion = Inventario.Ubicacion_Bodega\r\n" + "inner join Destino\r\n"
 						+ "		on Destino.idDestino = Inventario.Destino_Actual\r\n" + "inner join Servidor\r\n"
 						+ "		on Servidor.idServidor = Inventario.Servidor_idServidor\r\n"
-						+ "where  Inventario.Fecha_ultim >= ? and Inventario.Fecha_ultim <= ?";
+						+ "where  Inventario.Fecha_ultim >= ? and Inventario.Fecha_ultim <= ? AND Estado <> 'DE BAJA';";
 			}
 
 			PreparedStatement stm = conn.prepareStatement(sql);
@@ -930,4 +997,73 @@ public class Listar_Inventario extends JFrame {
 		}
 
 	}
+
+	private void BuscarEstado(String estado) {
+		try {
+
+			String sql = "";
+
+			if (cboEsta.getSelectedIndex() == 0) {
+				sql = "select\r\n " + "    Inventario.idInventario,\r\n" + "	   Cinta.Modelo,\r\n"
+						+ "	   Cinta.Marca,\r\n" + "	   Cinta.Categoria,\r\n" + "	   Inventario.Contenido,\r\n"
+						+ "	   Inventario.retencion,\r\n" + "	   Plataforma.Nombre,\r\n"
+						+ "	   Inventario.Fecha_Plataforma,\r\n" + "	   Inventario.Fecha_Exp,\r\n"
+						+ "	   Inventario.Fecha_ultim,\r\n" + "	   Pais.Nombre,\r\n"
+						+ "	   Ubicacion.Nombre_Ubicacion,\r\n" + "	   Destino.Nombre_Destino,\r\n"
+						+ "	   Inventario.Valija,\r\n" + "	   Inventario.Continuacion,\r\n"
+						+ "	   Inventario.Observaciones,\r\n" + "	   Inventario.Solicitado,\r\n"
+						+ "	   Inventario.Responsable,\r\n" + "	   Servidor.Nombre,\r\n"
+						+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio,\r\n"
+						+ "	   Inventario.Estado\r\n" + "from inventario \r\n" + "inner join Cinta\r\n"
+						+ "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n" + "inner join Plataforma\r\n"
+						+ "		on Plataforma.idPlataforma = Inventario.Plataforma_idPlataforma\r\n"
+						+ "inner join Pais\r\n" + "		on Pais.idPais = Inventario.Pais_idPais\r\n"
+						+ "inner join Ubicacion\r\n"
+						+ "		on Ubicacion.idUbicacion = Inventario.Ubicacion_Bodega\r\n" + "inner join Destino\r\n"
+						+ "		on Destino.idDestino = Inventario.Destino_Actual\r\n" + "inner join Servidor\r\n"
+						+ "		on Servidor.idServidor = Inventario.Servidor_idServidor";
+
+			} else {
+				sql = "select\r\n " + "    Inventario.idInventario,\r\n" + "	   Cinta.Modelo,\r\n"
+						+ "	   Cinta.Marca,\r\n" + "	   Cinta.Categoria,\r\n" + "	   Inventario.Contenido,\r\n"
+						+ "	   Inventario.retencion,\r\n" + "	   Plataforma.Nombre,\r\n"
+						+ "	   Inventario.Fecha_Plataforma,\r\n" + "	   Inventario.Fecha_Exp,\r\n"
+						+ "	   Inventario.Fecha_ultim,\r\n" + "	   Pais.Nombre,\r\n"
+						+ "	   Ubicacion.Nombre_Ubicacion,\r\n" + "	   Destino.Nombre_Destino,\r\n"
+						+ "	   Inventario.Valija,\r\n" + "	   Inventario.Continuacion,\r\n"
+						+ "	   Inventario.Observaciones,\r\n" + "	   Inventario.Solicitado,\r\n"
+						+ "	   Inventario.Responsable,\r\n" + "	   Servidor.Nombre,\r\n"
+						+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio,\r\n"
+						+ "	   Inventario.Estado\r\n" + "from inventario \r\n" + "inner join Cinta\r\n"
+						+ "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n" + "inner join Plataforma\r\n"
+						+ "		on Plataforma.idPlataforma = Inventario.Plataforma_idPlataforma\r\n"
+						+ "inner join Pais\r\n" + "		on Pais.idPais = Inventario.Pais_idPais\r\n"
+						+ "inner join Ubicacion\r\n"
+						+ "		on Ubicacion.idUbicacion = Inventario.Ubicacion_Bodega\r\n" + "inner join Destino\r\n"
+						+ "		on Destino.idDestino = Inventario.Destino_Actual\r\n" + "inner join Servidor\r\n"
+						+ "		on Servidor.idServidor = Inventario.Servidor_idServidor\r\n"
+						+ " where  Inventario.Estado  = '" + estado + "';";
+			}
+
+			PreparedStatement stm = conn.prepareStatement(sql);
+
+			ResultSet rs = stm.executeQuery();
+
+			ResultSetMetaData rsm = rs.getMetaData();
+			while (rs.next()) {
+				Object[] raws = new Object[rsm.getColumnCount()];
+				for (int i = 0; i < raws.length; i++) {
+					raws[i] = rs.getObject(i + 1);
+				}
+
+				mod.addRow(raws);
+				cont++;
+			}
+
+		} catch (Exception e) {
+			throw new IllegalArgumentException(e.getMessage());
+		}
+
+	}
+
 }

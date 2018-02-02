@@ -15,7 +15,7 @@ public class Cont_Inventario {
 	public boolean ingresarInventario(Inventario inv) {
 
 		try {
-			String sql = "insert into Inventario values" + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, ?,?, ? );";
+			String sql = "insert into Inventario values" + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, ?,?, ?,? );";
 
 			PreparedStatement pstm = conn.prepareCall(sql);
 			pstm.setString(1, inv.getIdInventario());
@@ -37,6 +37,7 @@ public class Cont_Inventario {
 			pstm.setInt(17, inv.getServidor());
 			pstm.setString(18, inv.getLugar_Requerido());
 			pstm.setString(19, inv.getMes_anio());
+			pstm.setString(20, inv.getEstado());
 			int x = pstm.executeUpdate();
 			return x > 0 ? true : false;
 		} catch (Exception e) {
@@ -69,7 +70,8 @@ public class Cont_Inventario {
 					+ "	   Inventario.Responsable,\r\n" 
 					+ "	   Servidor.Nombre,\r\n"
 					+ "	   Inventario.Lugar_Requerido,\r\n" 
-					+ "	   Inventario.mes_anio\r\n" 
+					+ "	   Inventario.mes_anio,\r\n"
+					+ "	   Inventario.Estado\r\n"
 					+ "from inventario \r\n"
 					+ "inner join Cinta\r\n" 
 					+ "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n"
@@ -126,7 +128,8 @@ public class Cont_Inventario {
 					"	Responsable = ?,\r\n" + 
 					"	Servidor_idServidor = ?,\r\n" + 
 					"	Lugar_Requerido = ?,\r\n" + 
-					"	mes_anio = ?\r\n" + 
+					"	mes_anio = ?,\r\n" +
+					"	Estado = ?   \r\n" +
 					"	where idInventario =? ";
 
 			PreparedStatement pstm = conn.prepareCall(sql);
@@ -148,7 +151,8 @@ public class Cont_Inventario {
 			pstm.setInt(16, inv.getServidor());
 			pstm.setString(17, inv.getLugar_Requerido());
 			pstm.setString(18, inv.getMes_anio());
-			pstm.setString(19, cod);
+			pstm.setString(19,  inv.getEstado());
+			pstm.setString(20, cod);
 			int x = pstm.executeUpdate();
 			return x > 0 ? true : false;
 		} catch (Exception e) {

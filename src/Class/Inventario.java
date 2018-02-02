@@ -21,11 +21,12 @@ public class Inventario {
     private int Servidor ;
     private String Lugar_Requerido ;
     private String mes_anio ;
+    private String Estado ;
 
     public Inventario() {
     }
 
-    public Inventario(String idInventario, int Cinta_idCinta, String Contenido, String retencion, int Plataforma, String Fecha_Plataforma, String Fecha_Exp, String Fecha_ultim, int Pais_idPais, int Ubicacion_Bodega, int Destino_Actual, String Valija, String Continuacion, String Observaciones, String Solicitado, String Responsable, int Servidor, String Lugar_Requerido, String mes_anio) {
+    public Inventario(String idInventario, int Cinta_idCinta, String Contenido, String retencion, int Plataforma, String Fecha_Plataforma, String Fecha_Exp, String Fecha_ultim, int Pais_idPais, int Ubicacion_Bodega, int Destino_Actual, String Valija, String Continuacion, String Observaciones, String Solicitado, String Responsable, int Servidor, String Lugar_Requerido, String mes_anio, String Estado) {
         this.idInventario = idInventario;
         this.Cinta_idCinta = Cinta_idCinta;
         this.Contenido = Contenido;
@@ -45,11 +46,20 @@ public class Inventario {
         this.Servidor = Servidor;
         this.Lugar_Requerido = Lugar_Requerido;
         this.mes_anio = mes_anio;
+        this.Estado = Estado;
     }
     
     
 
-    public String getIdInventario() {
+    public String getEstado() {
+		return Estado;
+	}
+
+	public void setEstado(String estado) {
+		Estado = estado;
+	}
+
+	public String getIdInventario() {
         return idInventario;
     }
 
@@ -201,10 +211,17 @@ public class Inventario {
         this.mes_anio = mes_anio;
     }
 
-    @Override
-    public String toString() {
-        return "Inventario{" + "idInventario=" + idInventario + ", Cinta_idCinta=" + Cinta_idCinta + ", Contenido=" + Contenido + ", retencion=" + retencion + ", Plataforma=" + Plataforma + ", Fecha_Plataforma=" + Fecha_Plataforma + ", Fecha_Exp=" + Fecha_Exp + ", Fecha_ultim=" + Fecha_ultim + ", Pais_idPais=" + Pais_idPais + ", Ubicacion_Bodega=" + Ubicacion_Bodega + ", Destino_Actual=" + Destino_Actual + ", Valija=" + Valija + ", Continuacion=" + Continuacion + ", Observaciones=" + Observaciones + ", Solicitado=" + Solicitado + ", Responsable=" + Responsable + ", Servidor=" + Servidor + ", Lugar_Requerido=" + Lugar_Requerido + ", mes_a\u00f1o=" + mes_anio + '}';
-    }
-    
+	@Override
+	public String toString() {
+		return "Inventario [idInventario=" + idInventario + ", Cinta_idCinta=" + Cinta_idCinta + ", Contenido="
+				+ Contenido + ", retencion=" + retencion + ", Plataforma=" + Plataforma + ", Fecha_Plataforma="
+				+ Fecha_Plataforma + ", Fecha_Exp=" + Fecha_Exp + ", Fecha_ultim=" + Fecha_ultim + ", Pais_idPais="
+				+ Pais_idPais + ", Ubicacion_Bodega=" + Ubicacion_Bodega + ", Destino_Actual=" + Destino_Actual
+				+ ", Valija=" + Valija + ", Continuacion=" + Continuacion + ", Observaciones=" + Observaciones
+				+ ", Solicitado=" + Solicitado + ", Responsable=" + Responsable + ", Servidor=" + Servidor
+				+ ", Lugar_Requerido=" + Lugar_Requerido + ", mes_anio=" + mes_anio + ", Estado=" + Estado + "]";
+	}
+
+  
     
 }

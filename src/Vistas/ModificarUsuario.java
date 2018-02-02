@@ -115,7 +115,7 @@ public class ModificarUsuario extends JFrame {
 			cboUsu.addItem("" + usuario.getNombre());
 		}
 
-		JButton btnNewButton = new JButton("Guardar Modificacion y Salir");
+		JButton btnNewButton = new JButton("Guardar Modificacion");
 		btnNewButton.addActionListener(new ActionListener() {
 			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent e) {
@@ -128,7 +128,7 @@ public class ModificarUsuario extends JFrame {
 						usu.setTipo(cboTipo.getSelectedIndex());
 						JOptionPane.showMessageDialog(null, "Usuario Modificado");
 						
-						dispose();
+						
 
 					} else {
 						JOptionPane.showMessageDialog(null, "Contraseñas no Coinciden");
