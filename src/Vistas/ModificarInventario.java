@@ -10,11 +10,15 @@ import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 import com.toedter.calendar.JDateChooser;
 
@@ -59,6 +63,10 @@ public class ModificarInventario extends JFrame {
 	private Connection conn = Conexion.getConnectio();
 	private JDateChooser datefPlat, dateFExp, dateFult;
 	private JTextField txtAnio;
+	private final static Logger log = Logger.getLogger(ModificarInventario.class);
+	private Calendar fecha =  Calendar.getInstance();
+	private SimpleDateFormat sfd2 = new SimpleDateFormat(" dd/MM/YYYY - HH:mm:ss");
+
 
 	/**
 	 * Launch the application.
@@ -93,8 +101,7 @@ public class ModificarInventario extends JFrame {
 		btnVolver.setBounds(522, 313, 89, 23);
 		btnVolver.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// MenuP m = new MenuP();
-				// m.setVisible(true);
+				
 				dispose();
 			}
 		});
@@ -221,6 +228,7 @@ public class ModificarInventario extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 
 				try {
+					PropertyConfigurator.configure("log4j.properties");
 					Cont_Inventario CI = new Cont_Inventario();
 
 					Inventario inv = new Inventario();
@@ -297,6 +305,8 @@ public class ModificarInventario extends JFrame {
 
 					String mes_anio = cbomes.getSelectedItem() + " - " + anio;
 					String estado = cboEstado.getSelectedItem() + "";
+					Inventario invs = new Inventario();
+					invs = inv;
 					inv.setCinta_idCinta(Cinta_idCinta);
 					inv.setContenido(Contenido);
 					inv.setRetencion(retencion);
@@ -322,6 +332,9 @@ public class ModificarInventario extends JFrame {
 					boolean valida = CI.ActualizarInventario(inv, cod);
 
 					if (valida) {
+						
+						log.warn(sfd2.format(fecha.getTime())+ " Se modifica Inventario de " + invs.toString() + " a " + inv.toString());
+						
 						JOptionPane.showMessageDialog(null, "modificado");
 					} else {
 						JOptionPane.showMessageDialog(null, "No Modificado");

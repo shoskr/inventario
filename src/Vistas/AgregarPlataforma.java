@@ -9,7 +9,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -19,6 +21,8 @@ import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.eclipse.wb.swing.FocusTraversalOnArray;
 
 import Class.*;
@@ -43,6 +47,10 @@ public class AgregarPlataforma extends JFrame {
 	private static DefaultTableModel mod;
 	private JScrollPane jScrollPane1;
 	private JTable Tabla;
+	private final static Logger log = Logger.getLogger(AgregarPlataforma.class);
+	private Calendar fecha =  Calendar.getInstance();
+	private SimpleDateFormat sfd2 = new SimpleDateFormat(" dd/MM/YYYY - HH:mm:ss");
+
 
 	/**
 	 * Launch the application.
@@ -93,7 +101,7 @@ public class AgregarPlataforma extends JFrame {
 		JButton button_1 = new JButton("Guardar");
 		button_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				PropertyConfigurator.configure("log4j.properties");
 				String plat = txtPlataforma.getText().toUpperCase();
 
 				if (plat.length() > 0) {
@@ -113,6 +121,7 @@ public class AgregarPlataforma extends JFrame {
 					boolean valida = CPl.ingresarPlataforma(pl);
 					if (valida) {
 						JOptionPane.showMessageDialog(null, "Guardo");
+						log.info( sfd2.format(fecha.getTime())+ " Se agrega Nueva Plataforma "+ pl.getNomPlataforma() );
 					} else {
 						JOptionPane.showMessageDialog(null, "No Guardo");
 					}

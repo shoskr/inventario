@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -20,6 +21,8 @@ import Class.*;
 import javax.swing.ScrollPaneConstants;
 import java.awt.Component;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.eclipse.wb.swing.FocusTraversalOnArray;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -54,6 +57,10 @@ public class EliminarInventario extends JFrame {
 	private JTextField txtCont;
 	private int cont = 0;
 	private JButton btnEliminarSeleccionado;
+	private final static Logger log = Logger.getLogger(EliminarInventario.class);
+	private Calendar fecha =  Calendar.getInstance();
+	private SimpleDateFormat sfd2 = new SimpleDateFormat(" dd/MM/YYYY - HH:mm:ss");
+	
 
 	/**
 	 * Launch the application.
@@ -281,7 +288,7 @@ public class EliminarInventario extends JFrame {
 		JButton btnNewButton = new JButton("Eliminar lista");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-
+				PropertyConfigurator.configure("log4j.properties");
 				DefaultTableModel tm = (DefaultTableModel) Tabla.getModel();
 				if (Tabla.getModel().getRowCount() != 0) {
 
@@ -293,7 +300,7 @@ public class EliminarInventario extends JFrame {
 						for (int i = 0; i < Tabla.getModel().getRowCount(); i++) {
 
 							String cod = String.valueOf(tm.getValueAt(i, 0)).toUpperCase();
-
+							log.warn( sfd2.format(fecha.getTime()) + " se da de baja la cinta "+ cod);
 							boolean valida = ModifDeBAja(cod);
 							if (valida) {
 								while (mod.getRowCount() > 0) {
@@ -307,6 +314,7 @@ public class EliminarInventario extends JFrame {
 
 						}
 						JOptionPane.showMessageDialog(null, count + " Archivo/s Dados de Baja ");
+						
 					}
 
 					else if (ax == JOptionPane.NO_OPTION) {
@@ -325,7 +333,7 @@ public class EliminarInventario extends JFrame {
 		btnEliminarSeleccionado = new JButton("Eliminar Seleccionado");
 		btnEliminarSeleccionado.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-
+				PropertyConfigurator.configure("log4j.properties");
 				DefaultTableModel tm = (DefaultTableModel) Tabla.getModel();
 				String cod = String.valueOf(tm.getValueAt(Tabla.getSelectedRow(), 0)).toUpperCase();
 				if (Tabla.getModel().getRowCount() != 0) {
@@ -339,10 +347,11 @@ public class EliminarInventario extends JFrame {
 
 							boolean valida = Eliminar(cod);
 							if (valida) {
-
+								log.warn(sfd2.format(fecha.getTime())+" Se elimina la cinta "+ cod);
 								mod.removeRow(Tabla.getSelectedRow());
 								cont = cont - 1;
 								txtCont.setText("" + cont);
+								
 
 							}
 							JOptionPane.showMessageDialog(null, " Archivo Eliminado ");
@@ -355,7 +364,7 @@ public class EliminarInventario extends JFrame {
 
 						boolean valida = ModifDeBAja(cod);
 						if (valida) {
-
+							log.warn(sfd2.format(fecha.getTime())+" Se da de Baja la cinta "+ cod);
 							mod.removeRow(Tabla.getSelectedRow());
 							cont = cont - 1;
 							txtCont.setText("" + cont);

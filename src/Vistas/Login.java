@@ -8,6 +8,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 import Class.*;
 import Controlador.*;
 
@@ -18,7 +21,9 @@ import javax.swing.JPasswordField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.Base64;
+import java.util.Calendar;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
 
@@ -34,6 +39,9 @@ public class Login extends JFrame {
 	private JButton btnNewButton;
 	private static Login frame;
 	private int Cont = 0;
+	private final static Logger log = Logger.getLogger(Login.class);
+	private Calendar fecha =  Calendar.getInstance();
+	private SimpleDateFormat sfd2 = new SimpleDateFormat(" dd/MM/YYYY - HH:mm:ss");
 	
 	
 	/**
@@ -90,6 +98,7 @@ public class Login extends JFrame {
 			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent e) {
 				try {
+					PropertyConfigurator.configure("log4j.properties");
 					Cont_Usuario CU = new Cont_Usuario();
 					Usuario usu = new Usuario();
 					String Usuari = txtusu.getText();
@@ -103,7 +112,7 @@ public class Login extends JFrame {
 						int acceso = CU.validaUsuario(usu);
 
 						if (acceso > 0) {
-
+							log.info( sfd2.format(fecha.getTime()) + " Se accede A sistema con usuario " + usu.getNombre());
 							if (acceso == 1) {
 								JOptionPane.showMessageDialog(null, "Usuario Valido " + Usuari);
 								MenuAdmin adm = new MenuAdmin();
@@ -122,13 +131,15 @@ public class Login extends JFrame {
 						} else {
 							Cont = Cont + 1;
 							JOptionPane.showMessageDialog(null,
+									
 									"Usuario no Existe o credenciales Invalidas " + Cont + " Numero de intento");
-
+							log.warn(sfd2.format(fecha.getTime())+ " Se intenta Ingresar Al sistema con Usuario o Contraseña incorrecta");
 							txtpass.setText("");
 							txtusu.setText("");
 							if (Cont == 3) {
 								
 								JOptionPane.showMessageDialog(null, "Limite Maximo De Intentos ");
+								log.warn(sfd2.format(fecha.getTime())+ " Despues de 3 intentos se cierra la aplicacion ");
 								System.exit(0);
 							}
 						}

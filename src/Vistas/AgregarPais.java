@@ -10,6 +10,8 @@ import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.eclipse.wb.swing.FocusTraversalOnArray;
 
 import Class.*;
@@ -21,7 +23,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.awt.event.ActionEvent;
 import java.awt.Toolkit;
 import javax.swing.JLabel;
@@ -43,6 +47,9 @@ public class AgregarPais extends JFrame {
 	private static DefaultTableModel mod;
 	private JScrollPane jScrollPane1;
 	private JTable Tabla;
+	private final static Logger log = Logger.getLogger(AgregarPais.class);
+	private Calendar fecha =  Calendar.getInstance();
+	private SimpleDateFormat sfd2 = new SimpleDateFormat(" dd/MM/YYYY - HH:mm:ss");
 
 	/**
 	 * Launch the application.
@@ -91,7 +98,7 @@ public class AgregarPais extends JFrame {
 		JButton button_1 = new JButton("Guardar");
 		button_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				PropertyConfigurator.configure("log4j.properties");
 				if (txtPais.getText().length() > 0) {
 					Pais pa = new Pais();
 					pa.setNombre(txtPais.getText().toUpperCase());
@@ -111,6 +118,7 @@ public class AgregarPais extends JFrame {
 
 					if (valida) {
 						JOptionPane.showMessageDialog(null, "Guardado");
+						log.info(sfd2.format(fecha.getTime())+ "Pais Guardado " + pa.getNombre());
 						txtPais.setText("");
 					} else {
 						JOptionPane.showMessageDialog(null, "No Guardo");

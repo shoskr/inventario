@@ -6,14 +6,18 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Calendar;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 import Class.*;
 import Controlador.*;
@@ -40,6 +44,9 @@ public class AgregarUsuario extends JFrame {
 	private Cont_Usuario CU = new Cont_Usuario();
 	private Usuario usu = new Usuario();
 	private JComboBox<String> cboTipo;
+	private final static Logger log = Logger.getLogger(AgregarUsuario.class);
+	private Calendar fecha =  Calendar.getInstance();
+	private SimpleDateFormat sfd2 = new SimpleDateFormat(" dd/MM/YYYY - HH:mm:ss");
 
 	/**
 	 * Launch the application.
@@ -115,6 +122,8 @@ public class AgregarUsuario extends JFrame {
 		btnGuardar.addActionListener(new ActionListener() {
 			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent e) {
+				PropertyConfigurator.configure("log4j.properties");
+				
 				int Tipo = cboTipo.getSelectedIndex();
 				String Nombre = txtusu.getText().toUpperCase();
 				ArrayList<Usuario> lista = new ArrayList<>();
@@ -137,6 +146,7 @@ public class AgregarUsuario extends JFrame {
 						usu.setTipo(Tipo);
 						CU.ingresarUsuario(usu);
 						JOptionPane.showMessageDialog(null, "Usuario Ingresado");
+						log.info(sfd2.format(fecha.getTime()) + " Se Agrega Un Usuario " + usu.getNombre() + "de Tipo "+  cboTipo.getSelectedItem() );
 						txtPass1.setText("");
 						txtPass2.setText("");
 						txtusu.setText("");

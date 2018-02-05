@@ -4,10 +4,14 @@ import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Calendar;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 import Class.*;
 import Controlador.*;
@@ -24,6 +28,7 @@ import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
 
@@ -41,6 +46,10 @@ public class ModificarUsuario extends JFrame {
 	private Cont_Usuario CU = new Cont_Usuario();
 	private static ModificarUsuario frame;
 	private Connection conn = Conexion.getConnectio();
+	private final static Logger log = Logger.getLogger(ModificarUsuario.class);
+	private Calendar fecha =  Calendar.getInstance();
+	private SimpleDateFormat sfd2 = new SimpleDateFormat(" dd/MM/YYYY - HH:mm:ss");
+
 
 	/**
 	 * Launch the application.
@@ -119,7 +128,7 @@ public class ModificarUsuario extends JFrame {
 		btnNewButton.addActionListener(new ActionListener() {
 			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent e) {
-
+				PropertyConfigurator.configure("log4j.properties");
 				if (txtpss.getText().length() >= 6 && txtpss.getText().length() <= 20) {
 					if (txtpss.getText().equals(txtpass2.getText())) {
 						usu = new Usuario();
@@ -127,6 +136,8 @@ public class ModificarUsuario extends JFrame {
 						usu.setClave(tex);
 						usu.setTipo(cboTipo.getSelectedIndex());
 						JOptionPane.showMessageDialog(null, "Usuario Modificado");
+						
+						log.warn(sfd2.format(fecha.getTime()) + "Se modifica el usuario "+ usu.getNombre());
 						
 						
 

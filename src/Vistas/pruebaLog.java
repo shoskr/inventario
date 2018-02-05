@@ -5,26 +5,29 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import org.apache.log4j.BasicConfigurator;
-//import org.apache.log4j.FileAppender;
-import org.apache.log4j.Logger;
-//import org.apache.log4j.PatternLayout;
 
-//http://migranitodejava.blogspot.ca/2011/07/log4j.html
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
+
+
 public class pruebaLog {
 
 	private final static Logger log = Logger.getLogger(pruebaLog.class);
+	Calendar fecha =  Calendar.getInstance();
+	SimpleDateFormat sfd2 = new SimpleDateFormat(" dd/MM/YYYY - HH:mm:ss");
 	 
 	public static void main(String[] args) throws IOException {
 		
-		
+		PropertyConfigurator.configure("log4j.properties");
 		Calendar fecha =  Calendar.getInstance();
-		SimpleDateFormat sfd = new SimpleDateFormat(" dd/MM/YYYY - HH:mm:ss");
-		BasicConfigurator.configure();
+		SimpleDateFormat sfd2 = new SimpleDateFormat(" dd/MM/YYYY - HH:mm:ss");
 		
 		
-		log.warn("un warning"+ sfd.format(fecha.getTime()));
-		log.error("un error" + sfd.format(fecha.getTime()));
+		
+		
+		log.warn("un warning"+ sfd2.format(fecha.getTime()));
+		log.error("un error" + sfd2.format(fecha.getTime()));
 	}
 
 	

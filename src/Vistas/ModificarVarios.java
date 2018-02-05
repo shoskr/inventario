@@ -6,7 +6,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -18,6 +19,9 @@ import javax.swing.table.DefaultTableModel;
 import Class.*;
 import javax.swing.ScrollPaneConstants;
 import java.awt.Component;
+
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.eclipse.wb.swing.FocusTraversalOnArray;
 import javax.swing.JButton;
 import javax.swing.JTextField;
@@ -43,6 +47,10 @@ public class ModificarVarios extends JFrame {
 	private JTextField txtCont;
 	private int cont = 0;
 	private Inventario inv = new Inventario();
+	private final static Logger log = Logger.getLogger(ModificarVarios.class);
+	private Calendar fecha =  Calendar.getInstance();
+	private SimpleDateFormat sfd2 = new SimpleDateFormat(" dd/MM/YYYY - HH:mm:ss");
+
 
 	/**
 	 * Launch the application.
@@ -224,8 +232,9 @@ public class ModificarVarios extends JFrame {
 		btnModificar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+					
 					DefaultTableModel tm = (DefaultTableModel) Tabla.getModel();
-
+					PropertyConfigurator.configure("log4j.properties");
 					for (int i = 0; i < Tabla.getModel().getRowCount(); i++) {
 
 						inv = new Inventario();
@@ -240,11 +249,15 @@ public class ModificarVarios extends JFrame {
 						inv.setLugar_Requerido(String.valueOf(((String) tm.getValueAt(i, 19)).toUpperCase()));
 						boolean valida = ActualizarInventario(inv, cod);
 						if (valida) {
-							JOptionPane.showMessageDialog(null, "Modificado Inventario Numero " + cod);
+							log.warn(sfd2.format(fecha.getTime())+ "Se modifica la cinta " + cod );
 						}
 
 					}
+					JOptionPane.showMessageDialog(null, "Se modificoaro Las tablas");
 
+					
+					
+					
 				} catch (Exception ex) {
 					throw new IllegalArgumentException(ex.getMessage());
 				}

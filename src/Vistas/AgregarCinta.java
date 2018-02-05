@@ -9,7 +9,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -19,6 +21,8 @@ import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.eclipse.wb.swing.FocusTraversalOnArray;
 import Class.*;
 import Controlador.*;
@@ -45,6 +49,9 @@ public class AgregarCinta extends JFrame {
 	private static DefaultTableModel mod;
 	private JScrollPane jScrollPane1;
 	private JTable Tabla;
+	private final static Logger log = Logger.getLogger(AgregarCinta.class);
+	private Calendar fecha =  Calendar.getInstance();
+	private SimpleDateFormat sfd2 = new SimpleDateFormat(" dd/MM/YYYY - HH:mm:ss");
 
 	/**
 	 * Launch the application.
@@ -116,7 +123,7 @@ public class AgregarCinta extends JFrame {
 		JButton btnGuarddar = new JButton("Guardar");
 		btnGuarddar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				PropertyConfigurator.configure("log4j.properties");
 				
 				Cinta cin = new Cinta();
 
@@ -145,6 +152,7 @@ public class AgregarCinta extends JFrame {
 
 							if (valida) {
 								JOptionPane.showMessageDialog(null, "Guardada");
+								log.info(sfd2.format(fecha.getTime()) + " Se Creao Nueva Cinta "+cin.toString());
 								txtCate.setText("");
 								txtMarca.setText("");
 								txtModelo.setText("");

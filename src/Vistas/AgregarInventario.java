@@ -15,6 +15,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 import com.toedter.calendar.JDateChooser;
 
 import javax.swing.JTextField;
@@ -54,6 +57,10 @@ public class AgregarInventario extends JFrame {
 	private JDateChooser datefPlat = new JDateChooser();
 	private JDateChooser dateFExp = new JDateChooser();
 	private JDateChooser dateFult = new JDateChooser();
+	private final static Logger log = Logger.getLogger(AgregarInventario.class);
+	private Calendar fecha =  Calendar.getInstance();
+	private SimpleDateFormat sfd2 = new SimpleDateFormat(" dd/MM/YYYY - HH:mm:ss");
+	
 	
 
 	/**
@@ -225,6 +232,8 @@ public class AgregarInventario extends JFrame {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
+					
+					PropertyConfigurator.configure("log4j.properties");
 
 					if (txtcod.getText().length() <= 0) {
 						JOptionPane.showMessageDialog(null, "Asegurece de Ingresar Codigo de inventario");
@@ -366,6 +375,8 @@ public class AgregarInventario extends JFrame {
 					boolean valida = CI.ingresarInventario(inv);
 
 					if (valida) {
+						
+						log.info(sfd2.format(fecha.getTime()) + "Se Ingresa nueva Cinta " + inv.getIdInventario());
 						JOptionPane.showMessageDialog(null, "Guardo");
 					} else {
 						JOptionPane.showMessageDialog(null, "No Guardo");

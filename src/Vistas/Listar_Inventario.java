@@ -8,6 +8,8 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -20,6 +22,9 @@ import Controlador.*;
 import javax.swing.ScrollPaneConstants;
 import java.awt.Component;
 import java.awt.Desktop;
+
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -65,6 +70,9 @@ public class Listar_Inventario extends JFrame {
 	private JTextField txtCont;
 	private int cont = 0;
 	private JTextField txtArchivo;
+	private final static Logger log = Logger.getLogger(Listar_Inventario.class);
+	private Calendar fecha =  Calendar.getInstance();
+	private SimpleDateFormat sfd2 = new SimpleDateFormat(" dd/MM/YYYY - HH:mm:ss");
 
 	/**
 	 * Launch the application.
@@ -213,6 +221,8 @@ public class Listar_Inventario extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
 
+					PropertyConfigurator.configure("log4j.properties");
+					
 					String nombre = txtArchivo.getText().trim();
 
 					String rutaArchivo = System.getProperty("user.home") + "/Desktop/" + nombre + ".xls";
@@ -247,6 +257,7 @@ public class Listar_Inventario extends JFrame {
 						}
 
 					}
+					log.info(sfd2.format(fecha.getTime())+ "Se crea Un achivo .xls llamado " + nombre );
 
 					libro.write(archivo);
 					archivo.close();

@@ -11,6 +11,8 @@ import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.eclipse.wb.swing.FocusTraversalOnArray;
 
 import Class.*;
@@ -26,7 +28,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
 
@@ -42,6 +46,9 @@ public class AgregarUbicacion extends JFrame {
 	private static DefaultTableModel mod;
 	private JScrollPane jScrollPane1;
 	private JTable Tabla;
+	private final static Logger log = Logger.getLogger(AgregarUbicacion.class);
+	private Calendar fecha =  Calendar.getInstance();
+	private SimpleDateFormat sfd2 = new SimpleDateFormat(" dd/MM/YYYY - HH:mm:ss");
 
 	/**
 	 * Launch the application.
@@ -96,7 +103,7 @@ public class AgregarUbicacion extends JFrame {
 		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String ubic = txtUbi.getText().toUpperCase();
-
+				PropertyConfigurator.configure("log4j.properties");
 				if (ubic.length() > 0) {
 					Cont_Ubicacion cnubi = new Cont_Ubicacion();
 					Ubicacion ubi = new Ubicacion();			
@@ -115,6 +122,7 @@ public class AgregarUbicacion extends JFrame {
 					lblUbicacion.setText(valida + "");
 					if (valida) {
 						JOptionPane.showMessageDialog(null, "Ubicacion Ingresada");
+						log.warn(sfd2.format(fecha.getTime())+ " Se agrega Nueva Ubicacion " + ubi.getLugar());
 						while (mod.getRowCount() > 0) {
 
 							mod.removeRow(0);
