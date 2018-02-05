@@ -406,8 +406,8 @@ public class AgregarInventario extends JFrame {
 					dateFExp.setDate(fecha.getTime());
 					dateFult.setDate(fecha.getTime());
 				} catch (Exception e) {
-
-					JOptionPane.showMessageDialog(null, "Error " + e.getMessage());
+					log.error(sfd2.format(fecha.getTime()) + " -> "+ e.getMessage());
+					throw new IllegalArgumentException(e.getMessage());					
 				}
 			}
 

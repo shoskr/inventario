@@ -101,8 +101,12 @@ public class AgregarVarias extends JFrame {
 					int num = Integer.parseInt(txtRangoIni.getText());
 					int can = Integer.parseInt(txtCant.getText());
 					
+					int cinta = cboCinta.getSelectedIndex();
+					
 					ArrayList<Inventario> list = new ArrayList<>();
-
+					
+					
+					String Ultima ="";
 					for (int ex = 0; ex < can; ex++) {
 						String id = "" + (num + ex);
 
@@ -119,7 +123,7 @@ public class AgregarVarias extends JFrame {
 						}
 						
 						inv.setIdInventario(Letras+id);
-						inv.setCinta_idCinta(1);
+						inv.setCinta_idCinta(cinta);
 						inv.setPlataforma(1);
 						inv.setPais_idPais(1);
 						inv.setFecha_Plataforma(sdf.format(fecha.getTime()));
@@ -139,8 +143,11 @@ public class AgregarVarias extends JFrame {
 						
 						if(valida) {
 							log.info(sfd2.format(fecha.getTime()) + "Se Ingresa nueva Cinta Disponibles" + inv.getIdInventario());
-						}			
+						}	
+						
+						Ultima = inv.getIdInventario();
 					}
+					JOptionPane.showMessageDialog(null, "Cintas Guardadas Hats la  " +Ultima );
 					
 					txtCant.setText("");
 					txtLetras.setText("");

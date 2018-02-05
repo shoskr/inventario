@@ -19,6 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.basic.BasicTreeUI.TreeHomeAction;
 import javax.swing.table.DefaultTableModel;
 
 import org.apache.log4j.Logger;
@@ -123,6 +124,7 @@ public class AgregarCinta extends JFrame {
 		JButton btnGuarddar = new JButton("Guardar");
 		btnGuarddar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				try {
 				PropertyConfigurator.configure("log4j.properties");
 				
 				Cinta cin = new Cinta();
@@ -171,7 +173,10 @@ public class AgregarCinta extends JFrame {
 				}
 				LimpiarTabla();
 				llenarTabla();
-
+				}catch (Exception ex) {
+					log.error(sfd2.format(fecha.getTime()) + " -> "+ ex.getMessage());
+					throw new IllegalArgumentException(ex.getMessage());
+				}
 			}
 		});
 		btnGuarddar.setBounds(158, 110, 89, 23);

@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import javax.swing.JFrame;
@@ -17,6 +18,11 @@ import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import Class.*;
+import Controlador.Cont_Pais;
+import Controlador.Cont_Plataforma;
+import Controlador.Cont_Servidor;
+import Controlador.Cont_Ubicacion;
+
 import javax.swing.ScrollPaneConstants;
 import java.awt.Component;
 
@@ -30,6 +36,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import java.awt.Color;
 import java.awt.Dimension;
+import javax.swing.JComboBox;
 
 public class ModificarVarios extends JFrame {
 
@@ -48,9 +55,10 @@ public class ModificarVarios extends JFrame {
 	private int cont = 0;
 	private Inventario inv = new Inventario();
 	private final static Logger log = Logger.getLogger(ModificarVarios.class);
-	private Calendar fecha =  Calendar.getInstance();
+	private Calendar fecha = Calendar.getInstance();
 	private SimpleDateFormat sfd2 = new SimpleDateFormat(" dd/MM/YYYY - HH:mm:ss");
-
+	private SimpleDateFormat sdf = new SimpleDateFormat("YYYY/MM/dd");
+	private JComboBox<String> cboPlata, cboubicac, cboDesti, cboServ, cboPais;
 
 	/**
 	 * Launch the application.
@@ -86,7 +94,7 @@ public class ModificarVarios extends JFrame {
 		jScrollPane1.setAutoscrolls(true);
 		jScrollPane1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 
-		jScrollPane1.setBounds(10, 45, 670, 355);
+		jScrollPane1.setBounds(10, 45, 670, 255);
 		Tabla = new javax.swing.JTable();
 		Tabla.setSelectionBackground(Color.WHITE);
 		Tabla.setMaximumSize(new Dimension(11, 5));
@@ -103,11 +111,11 @@ public class ModificarVarios extends JFrame {
 				new String[] { "Inventario", "Modelo", "Marca", "Categoria", "Contenido", "Retencion",
 						"Nombre plataforma", "Fecha Respaldo", "Fecha Expiracion", "Fecha Ultima Verificacion ", "Pais",
 						"Ubicacion", "Destino", "Valija", "Continuacion", "Observaciones", "Solicitado", "Responsable",
-						"Servidor", "Lugar Requerido", "Mes y Año" }) {
+						"Servidor", "Lugar Requerido", "Mes y Año", "Estado" }) {
 
 			private static final long serialVersionUID = 1L;
-			boolean[] columnEditables = new boolean[] { false, false, false, false, true, true, false, true, true,
-					true, false, false, false, true, true, true, true, true, false, true, false };
+			boolean[] columnEditables = new boolean[] { false, false, false, false, true, true, false, true, true, true,
+					false, false, false, true, true, true, true, true, false, true, false, true };
 
 			public boolean isCellEditable(int row, int column) {
 				return columnEditables[column];
@@ -137,7 +145,7 @@ public class ModificarVarios extends JFrame {
 		Tabla.getColumnModel().getColumn(18).setPreferredWidth(100);
 		Tabla.getColumnModel().getColumn(19).setPreferredWidth(110);
 		Tabla.getColumnModel().getColumn(20).setPreferredWidth(140);
-
+		Tabla.getColumnModel().getColumn(21).setPreferredWidth(100);
 		jScrollPane1.setViewportView(Tabla);
 		contentPane.setLayout(null);
 
@@ -172,11 +180,11 @@ public class ModificarVarios extends JFrame {
 			}
 
 		});
-		btnBuscar.setBounds(164, 411, 139, 23);
+		btnBuscar.setBounds(164, 311, 139, 23);
 		contentPane.add(btnBuscar);
 
 		txtCod = new JTextField();
-		txtCod.setBounds(10, 411, 142, 20);
+		txtCod.setBounds(10, 311, 142, 20);
 		contentPane.add(txtCod);
 		txtCod.setColumns(10);
 
@@ -205,12 +213,12 @@ public class ModificarVarios extends JFrame {
 		contentPane.add(btnVolver);
 
 		JLabel lblCintasEncontradas = new JLabel("Cintas Encontradas");
-		lblCintasEncontradas.setBounds(473, 414, 128, 16);
+		lblCintasEncontradas.setBounds(473, 314, 128, 16);
 		contentPane.add(lblCintasEncontradas);
 
 		txtCont = new JTextField();
 		txtCont.setEditable(false);
-		txtCont.setBounds(611, 411, 69, 22);
+		txtCont.setBounds(611, 311, 69, 22);
 		contentPane.add(txtCont);
 		txtCont.setColumns(10);
 		txtCont.setText("" + cont);
@@ -232,40 +240,91 @@ public class ModificarVarios extends JFrame {
 		btnModificar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					
-					DefaultTableModel tm = (DefaultTableModel) Tabla.getModel();
 					PropertyConfigurator.configure("log4j.properties");
+
+					int plat = cboPlata.getSelectedIndex() + 1;
+					int pais = cboPais.getSelectedIndex() + 1;
+					int ubi = cboubicac.getSelectedIndex() + 1;
+					int destino = cboDesti.getSelectedIndex() + 1;
+					int serv = cboServ.getSelectedIndex() + 1;
+
+					DefaultTableModel tm = (DefaultTableModel) Tabla.getModel();
+
 					for (int i = 0; i < Tabla.getModel().getRowCount(); i++) {
 
 						inv = new Inventario();
 						String cod = String.valueOf(tm.getValueAt(i, 0)).toUpperCase();
-						inv.setContenido(String.valueOf(((String) tm.getValueAt(i, 4)).toUpperCase()));
-						inv.setRetencion(String.valueOf(((String) tm.getValueAt(i, 5)).toUpperCase()));
-						inv.setValija(String.valueOf(((String) tm.getValueAt(i, 13)).toUpperCase()));
-						inv.setContinuacion(String.valueOf(((String) tm.getValueAt(i, 14)).toUpperCase()));
-						inv.setObservaciones(String.valueOf(((String) tm.getValueAt(i, 15)).toUpperCase()));
-						inv.setSolicitado(String.valueOf(((String) tm.getValueAt(i, 16)).toUpperCase()));
-						inv.setResponsable(String.valueOf(((String) tm.getValueAt(i, 17)).toUpperCase()));
-						inv.setLugar_Requerido(String.valueOf(((String) tm.getValueAt(i, 19)).toUpperCase()));
+						inv.setContenido(String.valueOf(((String) tm.getValueAt(i, 4)).toUpperCase() + ""));
+						inv.setRetencion(String.valueOf(((String) tm.getValueAt(i, 5)).toUpperCase() + ""));
+						inv.setValija(String.valueOf(((String) tm.getValueAt(i, 13)).toUpperCase() + ""));
+						inv.setContinuacion(String.valueOf(((String) tm.getValueAt(i, 14)).toUpperCase() + ""));
+						inv.setObservaciones(String.valueOf(((String) tm.getValueAt(i, 15)).toUpperCase() + ""));
+						inv.setSolicitado(String.valueOf(((String) tm.getValueAt(i, 16)).toUpperCase() + ""));
+						inv.setResponsable(String.valueOf(((String) tm.getValueAt(i, 17)).toUpperCase() + ""));
+						inv.setLugar_Requerido(String.valueOf(((String) tm.getValueAt(i, 19)).toUpperCase() + ""));
+						inv.setFecha_ultim(sdf.format(fecha.getTime() + ""));
+						inv.setPlataforma(plat);
+						inv.setDestino_Actual(destino);
+						inv.setUbicacion_Bodega(ubi);
+						inv.setPais_idPais(pais);
+						inv.setServidor(serv);
+						JOptionPane.showMessageDialog(null, inv.toString());
+
 						boolean valida = ActualizarInventario(inv, cod);
 						if (valida) {
-							log.warn(sfd2.format(fecha.getTime())+ "Se modifica la cinta " + cod );
+							log.warn(sfd2.format(fecha.getTime()) + "Se modifica la cinta " + cod);
 						}
 
 					}
 					JOptionPane.showMessageDialog(null, "Se modificoaro Las tablas");
 
-					
-					
-					
 				} catch (Exception ex) {
+					log.warn(sfd2.format(fecha.getTime()) + " -> " + ex.getMessage());
 					throw new IllegalArgumentException(ex.getMessage());
 				}
 			}
 		});
 		btnModificar.setBounds(315, 471, 120, 23);
 		contentPane.add(btnModificar);
+
+		JLabel lblServidor = new JLabel("Servidor");
+		lblServidor.setBounds(341, 412, 46, 14);
+		contentPane.add(lblServidor);
+
+		JLabel lblUbicacion = new JLabel("Ubicacion");
+		lblUbicacion.setBounds(45, 412, 62, 14);
+		contentPane.add(lblUbicacion);
+
+		JLabel lblDestinoActual = new JLabel("Destino Actual");
+		lblDestinoActual.setBounds(341, 357, 94, 14);
+		contentPane.add(lblDestinoActual);
+
+		JLabel lblPlataforma = new JLabel("Plataforma");
+		lblPlataforma.setBounds(45, 357, 89, 14);
+		contentPane.add(lblPlataforma);
+
+		cboPlata = new JComboBox<String>();
+		cboPlata.setBounds(144, 354, 138, 20);
+		contentPane.add(cboPlata);
+
+		cboubicac = new JComboBox<String>();
+		cboubicac.setBounds(144, 409, 138, 20);
+		contentPane.add(cboubicac);
+
+		cboDesti = new JComboBox<String>();
+		cboDesti.setBounds(452, 354, 149, 20);
+		contentPane.add(cboDesti);
+
+		cboServ = new JComboBox<String>();
+		cboServ.setBounds(452, 409, 149, 20);
+		contentPane.add(cboServ);
+
+		cboPais = new JComboBox<String>();
+		cboPais.setBounds(144, 454, 138, 20);
+		contentPane.add(cboPais);
 		contentPane.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[] { jScrollPane1, Tabla }));
+		CargarCbos();
+
 	}
 
 	private boolean buscarinv(String cod) {
@@ -279,9 +338,9 @@ public class ModificarVarios extends JFrame {
 					+ "	   Inventario.Valija,\r\n" + "	   Inventario.Continuacion,\r\n"
 					+ "	   Inventario.Observaciones,\r\n" + "	   Inventario.Solicitado,\r\n"
 					+ "	   Inventario.Responsable,\r\n" + "	   Servidor.Nombre,\r\n"
-					+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio\r\n" + "from inventario \r\n"
-					+ "inner join Cinta\r\n" + "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n"
-					+ "inner join Plataforma\r\n"
+					+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio,\r\n"
+					+ "	   Inventario.estado\r\n" + "from inventario \r\n" + "inner join Cinta\r\n"
+					+ "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n" + "inner join Plataforma\r\n"
 					+ "		on Plataforma.idPlataforma = Inventario.Plataforma_idPlataforma\r\n" + "inner join Pais\r\n"
 					+ "		on Pais.idPais = Inventario.Pais_idPais\r\n" + "inner join Ubicacion\r\n"
 					+ "		on Ubicacion.idUbicacion = Inventario.Ubicacion_Bodega\r\n" + "inner join Destino\r\n"
@@ -326,9 +385,9 @@ public class ModificarVarios extends JFrame {
 					+ "	   Inventario.Valija,\r\n" + "	   Inventario.Continuacion,\r\n"
 					+ "	   Inventario.Observaciones,\r\n" + "	   Inventario.Solicitado,\r\n"
 					+ "	   Inventario.Responsable,\r\n" + "	   Servidor.Nombre,\r\n"
-					+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio\r\n" + "from inventario \r\n"
-					+ "inner join Cinta\r\n" + "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n"
-					+ "inner join Plataforma\r\n"
+					+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio,\r\n"
+					+ "	   Inventario.estado\r\n" + "from inventario \r\n" + "inner join Cinta\r\n"
+					+ "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n" + "inner join Plataforma\r\n"
 					+ "		on Plataforma.idPlataforma = Inventario.Plataforma_idPlataforma\r\n" + "inner join Pais\r\n"
 					+ "		on Pais.idPais = Inventario.Pais_idPais\r\n" + "inner join Ubicacion\r\n"
 					+ "		on Ubicacion.idUbicacion = Inventario.Ubicacion_Bodega\r\n" + "inner join Destino\r\n"
@@ -374,9 +433,9 @@ public class ModificarVarios extends JFrame {
 					+ "	   Inventario.Valija,\r\n" + "	   Inventario.Continuacion,\r\n"
 					+ "	   Inventario.Observaciones,\r\n" + "	   Inventario.Solicitado,\r\n"
 					+ "	   Inventario.Responsable,\r\n" + "	   Servidor.Nombre,\r\n"
-					+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio\r\n" + "from inventario \r\n"
-					+ "inner join Cinta\r\n" + "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n"
-					+ "inner join Plataforma\r\n"
+					+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio,\r\n"
+					+ "	   Inventario.estado\r\n" + "from inventario \r\n" + "inner join Cinta\r\n"
+					+ "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n" + "inner join Plataforma\r\n"
 					+ "		on Plataforma.idPlataforma = Inventario.Plataforma_idPlataforma\r\n" + "inner join Pais\r\n"
 					+ "		on Pais.idPais = Inventario.Pais_idPais\r\n" + "inner join Ubicacion\r\n"
 					+ "		on Ubicacion.idUbicacion = Inventario.Ubicacion_Bodega\r\n" + "inner join Destino\r\n"
@@ -414,7 +473,9 @@ public class ModificarVarios extends JFrame {
 		try {
 			String sql = "update Inventario\r\n" + "  set  Contenido = ?,\r\n" + " 	retencion = ?,\r\n"
 					+ "	Valija = ?,\r\n" + "	Continuacion = ?,\r\n" + "	Observaciones = ?,\r\n"
-					+ "	Solicitado = ?,\r\n" + "	Responsable = ?,\r\n" + "	Lugar_Requerido = ?\r\n"
+					+ "	Solicitado = ?,\r\n" + "	Responsable = ?,\r\n" + "	Lugar_Requerido = ?,\r\n"
+					+ "	Plataforma_idPlataforma = ?,\r\n" + "	Pais_idPais = ?,\r\n" + "  Ubicacion_Bodega = ?,\r\n"
+					+ "	Destino_Actual = ?,\r\n" + "  Servidor_idServidor = ?,\r\n" + "	Fecha_ultim = ?\r\n"
 					+ "	where idInventario =? ";
 
 			PreparedStatement pstm = conn.prepareCall(sql);
@@ -426,13 +487,56 @@ public class ModificarVarios extends JFrame {
 			pstm.setString(6, inv.getSolicitado());
 			pstm.setString(7, inv.getResponsable());
 			pstm.setString(8, inv.getLugar_Requerido());
-			pstm.setString(9, cod);
+			pstm.setInt(9, inv.getPlataforma());
+			pstm.setInt(10, inv.getPais_idPais());
+			pstm.setInt(11, inv.getUbicacion_Bodega());
+			pstm.setInt(12, inv.getDestino_Actual());
+			pstm.setInt(13, inv.getServidor());
+			pstm.setString(14, inv.getFecha_ultim());
+			pstm.setString(15, cod);
 
 			int x = pstm.executeUpdate();
 			return x > 0 ? true : false;
 
 		} catch (Exception e) {
 			throw new IllegalArgumentException(e.getMessage());
+		}
+
+	}
+
+	private void CargarCbos() {
+
+		Cont_Pais CP = new Cont_Pais();
+		Cont_Plataforma CPL = new Cont_Plataforma();
+		Cont_Servidor CS = new Cont_Servidor();
+		Cont_Ubicacion CU = new Cont_Ubicacion();
+
+		ArrayList<Pais> listpais = new ArrayList<>();
+		listpais = CP.listar();
+		ArrayList<Servidor> listServ = new ArrayList<>();
+		listServ = CS.listar();
+		ArrayList<Plataforma> listPlat = new ArrayList<>();
+		listPlat = CPL.listar();
+		ArrayList<Ubicacion> listUbi = new ArrayList<>();
+		listUbi = CU.listUBI();
+
+		for (Ubicacion ubicacion : listUbi) {
+			cboubicac.addItem(ubicacion.getIdubicacion() + " - " + ubicacion.getLugar());
+			cboDesti.addItem(ubicacion.getIdubicacion() + " - " + ubicacion.getLugar());
+		}
+
+		for (Plataforma plat : listPlat) {
+			cboPlata.addItem(plat.getIdPlataforma() + " - " + plat.getNomPlataforma());
+
+		}
+
+		for (Servidor sserv : listServ) {
+			cboServ.addItem(sserv.getIdServidor() + " - " + sserv.getNombre());
+		}
+
+		for (Pais pai : listpais) {
+
+			cboPais.addItem(pai.getIdPais() + " - " + pai.getNombre());
 		}
 
 	}
