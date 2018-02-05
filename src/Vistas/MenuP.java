@@ -64,7 +64,7 @@ public class MenuP extends JFrame {
 				
 			}
 		});
-		btnListarTodo.setBounds(254, 11, 165, 23);
+		btnListarTodo.setBounds(254, 48, 165, 23);
 		contentPane.add(btnListarTodo);
 		
 		JButton btnBuscarubi = new JButton("Modificar Inventario");
@@ -75,7 +75,7 @@ public class MenuP extends JFrame {
 				
 			}
 		});
-		btnBuscarubi.setBounds(254, 46, 165, 23);
+		btnBuscarubi.setBounds(254, 83, 165, 23);
 		contentPane.add(btnBuscarubi);
 		
 		JButton btnSalir = new JButton("Salir");
@@ -170,7 +170,18 @@ public class MenuP extends JFrame {
 				
 			}
 		});
-		btnModificarVarios.setBounds(254, 79, 165, 23);
+		btnModificarVarios.setBounds(254, 116, 165, 23);
 		contentPane.add(btnModificarVarios);
+		
+		JButton btnNewButton = new JButton("Agregar Varias Cintas");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				AgregarVarias av = new AgregarVarias();
+				av.setVisible(true);
+			}
+		});
+		btnNewButton.setBounds(254, 11, 165, 23);
+		contentPane.add(btnNewButton);
 	}
 }
