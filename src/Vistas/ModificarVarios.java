@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.text.SimpleDateFormat;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -37,6 +38,7 @@ import javax.swing.JLabel;
 import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
 
 public class ModificarVarios extends JFrame {
 
@@ -53,12 +55,15 @@ public class ModificarVarios extends JFrame {
 	private JButton btnLimpiar;
 	private JTextField txtCont;
 	private int cont = 0;
-	private Inventario inv = new Inventario();
 	private final static Logger log = Logger.getLogger(ModificarVarios.class);
 	private Calendar fecha = Calendar.getInstance();
 	private SimpleDateFormat sfd2 = new SimpleDateFormat(" dd/MM/YYYY - HH:mm:ss");
 	private SimpleDateFormat sdf = new SimpleDateFormat("YYYY/MM/dd");
-	private JComboBox<String> cboPlata, cboubicac, cboDesti, cboServ, cboPais;
+	private JComboBox<String> cboPlata, cboubicac, cboDesti, cboServ, cboPais, cboMes;
+	private JLabel lblMesYAo;
+	private JTextField txtAnio;
+	private JComboBox cboEstado;
+	private JLabel lblEstadoCinta;
 
 	/**
 	 * Launch the application.
@@ -83,7 +88,7 @@ public class ModificarVarios extends JFrame {
 		setTitle("Modificacion Masiva");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(ModificarVarios.class.getResource("/img/scot.png")));
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		setBounds(100, 100, 706, 590);
+		setBounds(100, 100, 766, 613);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.WHITE);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -94,7 +99,7 @@ public class ModificarVarios extends JFrame {
 		jScrollPane1.setAutoscrolls(true);
 		jScrollPane1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 
-		jScrollPane1.setBounds(10, 45, 670, 255);
+		jScrollPane1.setBounds(10, 45, 730, 255);
 		Tabla = new javax.swing.JTable();
 		Tabla.setSelectionBackground(Color.WHITE);
 		Tabla.setMaximumSize(new Dimension(11, 5));
@@ -191,12 +196,7 @@ public class ModificarVarios extends JFrame {
 		btnLimpiar = new JButton("Limpiar");
 		btnLimpiar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				while (mod.getRowCount() > 0) {
-
-					mod.removeRow(0);
-					cont = 0;
-					txtCont.setText("" + cont);
-				}
+				limipar();
 			}
 		});
 		btnLimpiar.setBounds(574, 11, 89, 23);
@@ -209,7 +209,7 @@ public class ModificarVarios extends JFrame {
 				dispose();
 			}
 		});
-		btnVolver.setBounds(591, 518, 89, 23);
+		btnVolver.setBounds(621, 541, 89, 23);
 		contentPane.add(btnVolver);
 
 		JLabel lblCintasEncontradas = new JLabel("Cintas Encontradas");
@@ -242,53 +242,75 @@ public class ModificarVarios extends JFrame {
 				try {
 					PropertyConfigurator.configure("log4j.properties");
 
-					int plat = cboPlata.getSelectedIndex() + 1;
-					int pais = cboPais.getSelectedIndex() + 1;
-					int ubi = cboubicac.getSelectedIndex() + 1;
-					int destino = cboDesti.getSelectedIndex() + 1;
-					int serv = cboServ.getSelectedIndex() + 1;
+					
+					
+					int plat = cboPlata.getSelectedIndex()+1;
+					int pais = cboPais.getSelectedIndex()+1;
+					int ubi = cboubicac.getSelectedIndex()+1;
+					int destino = cboDesti.getSelectedIndex()+1;
+					int serv = cboServ.getSelectedIndex()+1;
+					String fech = sdf.format(fecha.getTime());
+					
+					int Anio  = Integer.parseInt(txtAnio.getText());
+					
+					if(Anio<1980 && Anio>2150) {
+						JOptionPane.showMessageDialog(null, "Año Fuera de rango");
+						return;
+					}
+					
+					Calendar c1 = Calendar.getInstance();
+					c1.add(Calendar.YEAR, 10);
+					String FechUl =sdf.format(c1.getTime());
+					String MesAnio = cboMes.getSelectedItem() + " - " + Anio;
+					String Estado = cboEstado.getSelectedItem()+"";
 
 					DefaultTableModel tm = (DefaultTableModel) Tabla.getModel();
 
 					for (int i = 0; i < Tabla.getModel().getRowCount(); i++) {
 
-						inv = new Inventario();
+						Inventario inv = new Inventario();
 						String cod = String.valueOf(tm.getValueAt(i, 0)).toUpperCase();
-						inv.setContenido(String.valueOf(((String) tm.getValueAt(i, 4)).toUpperCase() + ""));
-						inv.setRetencion(String.valueOf(((String) tm.getValueAt(i, 5)).toUpperCase() + ""));
-						inv.setValija(String.valueOf(((String) tm.getValueAt(i, 13)).toUpperCase() + ""));
-						inv.setContinuacion(String.valueOf(((String) tm.getValueAt(i, 14)).toUpperCase() + ""));
-						inv.setObservaciones(String.valueOf(((String) tm.getValueAt(i, 15)).toUpperCase() + ""));
-						inv.setSolicitado(String.valueOf(((String) tm.getValueAt(i, 16)).toUpperCase() + ""));
-						inv.setResponsable(String.valueOf(((String) tm.getValueAt(i, 17)).toUpperCase() + ""));
-						inv.setLugar_Requerido(String.valueOf(((String) tm.getValueAt(i, 19)).toUpperCase() + ""));
-						inv.setFecha_ultim(sdf.format(fecha.getTime() + ""));
-						inv.setPlataforma(plat);
-						inv.setDestino_Actual(destino);
-						inv.setUbicacion_Bodega(ubi);
-						inv.setPais_idPais(pais);
-						inv.setServidor(serv);
-						JOptionPane.showMessageDialog(null, inv.toString());
+						inv.setContenido(String.valueOf(((String) tm.getValueAt(i, 4)).toUpperCase()));
+						inv.setRetencion(String.valueOf(((String) tm.getValueAt(i, 5)).toUpperCase()));
+						inv.setValija(String.valueOf(((String) tm.getValueAt(i, 13)).toUpperCase()));
+						inv.setContinuacion(String.valueOf(((String) tm.getValueAt(i, 14)).toUpperCase()));
+						inv.setObservaciones(String.valueOf(((String) tm.getValueAt(i, 15)).toUpperCase()));
+						inv.setSolicitado(String.valueOf(((String) tm.getValueAt(i, 16)).toUpperCase()));
+						inv.setResponsable(String.valueOf(((String) tm.getValueAt(i, 17)).toUpperCase()));
+						inv.setLugar_Requerido(String.valueOf(((String) tm.getValueAt(i, 19)).toUpperCase()));
+						
+						
 
-						boolean valida = ActualizarInventario(inv, cod);
+						boolean valida = ActualizarInventario(inv, cod,plat, FechUl,fech, pais, ubi, destino, serv, MesAnio, Estado );
 						if (valida) {
 							log.warn(sfd2.format(fecha.getTime()) + "Se modifica la cinta " + cod);
 						}
 
 					}
 					JOptionPane.showMessageDialog(null, "Se modificoaro Las tablas");
+					
+					cboDesti.setSelectedIndex(0);
+					cboMes.setSelectedIndex(0);
+					cboPais.setSelectedIndex(0);
+					cboServ.setSelectedIndex(0);
+					cboubicac.setSelectedIndex(0);
+					cboPlata.setSelectedIndex(0);
+					cboEstado.setSelectedIndex(0);
+					limipar();
+					
+					
 
 				} catch (Exception ex) {
 					log.warn(sfd2.format(fecha.getTime()) + " -> " + ex.getMessage());
-					throw new IllegalArgumentException(ex.getMessage());
+					JOptionPane.showMessageDialog(null, ex.getMessage());
 				}
 			}
 		});
-		btnModificar.setBounds(315, 471, 120, 23);
+		btnModificar.setBounds(45, 518, 120, 23);
 		contentPane.add(btnModificar);
 
 		JLabel lblServidor = new JLabel("Servidor");
-		lblServidor.setBounds(341, 412, 46, 14);
+		lblServidor.setBounds(321, 412, 66, 14);
 		contentPane.add(lblServidor);
 
 		JLabel lblUbicacion = new JLabel("Ubicacion");
@@ -296,7 +318,7 @@ public class ModificarVarios extends JFrame {
 		contentPane.add(lblUbicacion);
 
 		JLabel lblDestinoActual = new JLabel("Destino Actual");
-		lblDestinoActual.setBounds(341, 357, 94, 14);
+		lblDestinoActual.setBounds(321, 357, 94, 14);
 		contentPane.add(lblDestinoActual);
 
 		JLabel lblPlataforma = new JLabel("Plataforma");
@@ -322,6 +344,33 @@ public class ModificarVarios extends JFrame {
 		cboPais = new JComboBox<String>();
 		cboPais.setBounds(144, 454, 138, 20);
 		contentPane.add(cboPais);
+		
+		JLabel lblPais = new JLabel("Pais");
+		lblPais.setBounds(45, 457, 46, 14);
+		contentPane.add(lblPais);
+		
+		lblMesYAo = new JLabel("Mes y A\u00F1o ");
+		lblMesYAo.setBounds(321, 457, 94, 14);
+		contentPane.add(lblMesYAo);
+		
+		cboMes = new JComboBox<String>();
+		cboMes.setModel(new DefaultComboBoxModel(new String[] {"ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"}));
+		cboMes.setBounds(454, 454, 149, 20);
+		contentPane.add(cboMes);
+		
+		txtAnio = new JTextField();
+		txtAnio.setBounds(624, 454, 56, 20);
+		contentPane.add(txtAnio);
+		txtAnio.setColumns(10);
+		
+		cboEstado = new JComboBox();
+		cboEstado.setModel(new DefaultComboBoxModel(new String[] {"DISPONIBLE", "ALMACENADO", "EN TRANCITO", "DE BAJA"}));
+		cboEstado.setBounds(452, 506, 149, 20);
+		contentPane.add(cboEstado);
+		
+		lblEstadoCinta = new JLabel("Estado Cinta");
+		lblEstadoCinta.setBounds(321, 509, 81, 14);
+		contentPane.add(lblEstadoCinta);
 		contentPane.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[] { jScrollPane1, Tabla }));
 		CargarCbos();
 
@@ -468,33 +517,50 @@ public class ModificarVarios extends JFrame {
 
 	}
 
-	public boolean ActualizarInventario(Inventario inv, String cod) {
+	public boolean ActualizarInventario(Inventario inv, String cod, int plat, String fech,String fechUl, int pais, int ubi, int dest, int serv, String mesAni, String esta ) {
 
 		try {
-			String sql = "update Inventario\r\n" + "  set  Contenido = ?,\r\n" + " 	retencion = ?,\r\n"
-					+ "	Valija = ?,\r\n" + "	Continuacion = ?,\r\n" + "	Observaciones = ?,\r\n"
-					+ "	Solicitado = ?,\r\n" + "	Responsable = ?,\r\n" + "	Lugar_Requerido = ?,\r\n"
-					+ "	Plataforma_idPlataforma = ?,\r\n" + "	Pais_idPais = ?,\r\n" + "  Ubicacion_Bodega = ?,\r\n"
-					+ "	Destino_Actual = ?,\r\n" + "  Servidor_idServidor = ?,\r\n" + "	Fecha_ultim = ?\r\n"
-					+ "	where idInventario =? ";
+			String sql = "update Inventario \n" 
+					+ "set Contenido = ?,\n" 
+					+ "retencion = ?,\n"
+					+ "Plataforma_idPlataforma = ?,\n" 
+					+ "Fecha_Exp = ?,\n" 
+					+ "Fecha_ultim = ?,\n"
+					+ "Pais_idPais = ?,\n" 
+					+ "Ubicacion_Bodega = ?,\n" 
+					+ "Destino_Actual = ?,\n" 
+					+ "Valija = ?,\n"
+					+ "Continuacion = ?,\n" 
+					+ "Observaciones = ?,\n" 
+					+ "Solicitado = ?,\n" 
+					+ "Responsable = ?,\n"
+					+ "Servidor_idServidor =?,\n" 
+					+ "Lugar_Requerido = ?,\n" 
+					+ "mes_anio = ?,\n" 
+					+ "Estado = ?\n"
+					+ "where idInventario = ?";
 
 			PreparedStatement pstm = conn.prepareCall(sql);
+		
 			pstm.setString(1, inv.getContenido());
 			pstm.setString(2, inv.getRetencion());
-			pstm.setString(3, inv.getValija());
-			pstm.setString(4, inv.getContinuacion());
-			pstm.setString(5, inv.getObservaciones());
-			pstm.setString(6, inv.getSolicitado());
-			pstm.setString(7, inv.getResponsable());
-			pstm.setString(8, inv.getLugar_Requerido());
-			pstm.setInt(9, inv.getPlataforma());
-			pstm.setInt(10, inv.getPais_idPais());
-			pstm.setInt(11, inv.getUbicacion_Bodega());
-			pstm.setInt(12, inv.getDestino_Actual());
-			pstm.setInt(13, inv.getServidor());
-			pstm.setString(14, inv.getFecha_ultim());
-			pstm.setString(15, cod);
-
+			pstm.setInt(3, plat);
+			pstm.setString(4, fech);
+			pstm.setString(5,fechUl);
+			pstm.setInt(6, pais);
+			pstm.setInt(7, ubi);
+			pstm.setInt(8, dest);
+			pstm.setString(9, inv.getValija());
+			pstm.setString(10, inv.getContinuacion());
+			pstm.setString(11, inv.getObservaciones());
+			pstm.setString(12, inv.getSolicitado());
+			pstm.setString(13, inv.getResponsable());
+			pstm.setInt(14, serv);
+			pstm.setString(15, inv.getLugar_Requerido());
+			pstm.setString(16, mesAni);
+			pstm.setString(17, esta);
+			pstm.setString(18, cod);
+			
 			int x = pstm.executeUpdate();
 			return x > 0 ? true : false;
 
@@ -505,6 +571,10 @@ public class ModificarVarios extends JFrame {
 	}
 
 	private void CargarCbos() {
+		
+		SimpleDateFormat sd = new SimpleDateFormat("YYYY");
+		
+		txtAnio.setText(sd.format(fecha.getTime()));
 
 		Cont_Pais CP = new Cont_Pais();
 		Cont_Plataforma CPL = new Cont_Plataforma();
@@ -540,5 +610,18 @@ public class ModificarVarios extends JFrame {
 		}
 
 	}
+	
+	private void limipar() {
+		try {
+			while (mod.getRowCount() > 0) {
 
+				mod.removeRow(0);
+				cont = 0;
+				txtCont.setText("" + cont);
+			}
+		} catch (Exception e) {
+			throw new IllegalArgumentException(e.getMessage());
+		}
+
+	}
 }
