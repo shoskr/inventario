@@ -7,7 +7,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.text.SimpleDateFormat;
-import java.time.Year;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -40,6 +39,7 @@ import java.awt.Dimension;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 
+
 public class ModificarVarios extends JFrame {
 
 	/**
@@ -62,7 +62,7 @@ public class ModificarVarios extends JFrame {
 	private JComboBox<String> cboPlata, cboubicac, cboDesti, cboServ, cboPais, cboMes;
 	private JLabel lblMesYAo;
 	private JTextField txtAnio;
-	private JComboBox cboEstado;
+	private JComboBox<Object> cboEstado;
 	private JLabel lblEstadoCinta;
 
 	/**
@@ -270,20 +270,28 @@ public class ModificarVarios extends JFrame {
 
 						Inventario inv = new Inventario();
 						String cod = String.valueOf(tm.getValueAt(i, 0)).toUpperCase();
-						inv.setContenido(String.valueOf(((String) tm.getValueAt(i, 4)).toUpperCase()));
-						inv.setRetencion(String.valueOf(((String) tm.getValueAt(i, 5)).toUpperCase()));
-						inv.setValija(String.valueOf(((String) tm.getValueAt(i, 13)).toUpperCase()));
-						inv.setContinuacion(String.valueOf(((String) tm.getValueAt(i, 14)).toUpperCase()));
-						inv.setObservaciones(String.valueOf(((String) tm.getValueAt(i, 15)).toUpperCase()));
-						inv.setSolicitado(String.valueOf(((String) tm.getValueAt(i, 16)).toUpperCase()));
-						inv.setResponsable(String.valueOf(((String) tm.getValueAt(i, 17)).toUpperCase()));
-						inv.setLugar_Requerido(String.valueOf(((String) tm.getValueAt(i, 19)).toUpperCase()));
+						String cont = String.valueOf(((String) tm.getValueAt(i, 4)).toUpperCase()) + " ";
+						inv.setContenido(cont);
+						String reten = String.valueOf(((String) tm.getValueAt(i, 5)).toUpperCase()) + " ";
+						inv.setRetencion(reten);
+						String valija = String.valueOf(((String) tm.getValueAt(i, 13)).toUpperCase())+ " ";
+						inv.setValija(valija);
+						String conti = String.valueOf(((String) tm.getValueAt(i, 14)).toUpperCase())+ " ";
+						inv.setContinuacion(conti);
+						String obser = String.valueOf(((String) tm.getValueAt(i, 15)).toUpperCase())+ " ";
+						inv.setObservaciones(obser);
+						String Solici = String.valueOf(((String) tm.getValueAt(i, 16)).toUpperCase())+ " ";
+						inv.setSolicitado(Solici);
+						String resp = String.valueOf(((String) tm.getValueAt(i, 17)).toUpperCase())+ " ";
+						inv.setResponsable(resp);
+						String Luga = String.valueOf(((String) tm.getValueAt(i, 19)).toUpperCase())+ " ";
+						inv.setLugar_Requerido(Luga);
 						
 						
 
 						boolean valida = ActualizarInventario(inv, cod,plat, FechUl,fech, pais, ubi, destino, serv, MesAnio, Estado );
 						if (valida) {
-							log.warn(sfd2.format(fecha.getTime()) + "Se modifica la cinta " + cod);
+							log.warn(sfd2.format(fecha.getTime()) + " Se modifica la cinta " + cod);
 						}
 
 					}
@@ -302,7 +310,7 @@ public class ModificarVarios extends JFrame {
 
 				} catch (Exception ex) {
 					log.warn(sfd2.format(fecha.getTime()) + " -> " + ex.getMessage());
-					JOptionPane.showMessageDialog(null, ex.getMessage());
+					
 				}
 			}
 		});
@@ -354,7 +362,7 @@ public class ModificarVarios extends JFrame {
 		contentPane.add(lblMesYAo);
 		
 		cboMes = new JComboBox<String>();
-		cboMes.setModel(new DefaultComboBoxModel(new String[] {"ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"}));
+		cboMes.setModel(new DefaultComboBoxModel<String>(new String[] {"ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"}));
 		cboMes.setBounds(454, 454, 149, 20);
 		contentPane.add(cboMes);
 		
@@ -363,8 +371,8 @@ public class ModificarVarios extends JFrame {
 		contentPane.add(txtAnio);
 		txtAnio.setColumns(10);
 		
-		cboEstado = new JComboBox();
-		cboEstado.setModel(new DefaultComboBoxModel(new String[] {"DISPONIBLE", "ALMACENADO", "EN TRANCITO", "DE BAJA"}));
+		cboEstado = new JComboBox<Object>();
+		cboEstado.setModel(new DefaultComboBoxModel<Object>(new String[] {"DISPONIBLE", "ALMACENADO", "EN TRANCITO", "DE BAJA"}));
 		cboEstado.setBounds(452, 506, 149, 20);
 		contentPane.add(cboEstado);
 		
