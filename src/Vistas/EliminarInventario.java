@@ -58,9 +58,8 @@ public class EliminarInventario extends JFrame {
 	private int cont = 0;
 	private JButton btnEliminarSeleccionado;
 	private final static Logger log = Logger.getLogger(EliminarInventario.class);
-	private Calendar fecha =  Calendar.getInstance();
+	private Calendar fecha = Calendar.getInstance();
 	private SimpleDateFormat sfd2 = new SimpleDateFormat(" dd/MM/YYYY - HH:mm:ss");
-	
 
 	/**
 	 * Launch the application.
@@ -157,11 +156,11 @@ public class EliminarInventario extends JFrame {
 		JButton btnBuscar = new JButton("Buscar Codigo");
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
+
 				String Cod = txtCod.getText().trim().toUpperCase();
 				if (Cod.length() != 0) {
-					
-					if(Tabla.getModel().getRowCount()!=0) {
+
+					if (Tabla.getModel().getRowCount() != 0) {
 						int ax = JOptionPane.showConfirmDialog(null, "Desea Eliminar Busqueda Anterior");
 						if (ax == JOptionPane.YES_OPTION) {
 							limipar();
@@ -171,14 +170,8 @@ public class EliminarInventario extends JFrame {
 					if (valida) {
 
 					} else {
-						boolean valida2 = buscarAnt(Cod);
-						if (valida2) {
+						buscarAnt(Cod);
 
-						}else {
-							boolean valida3 = buscar(Cod);
-							if(valida3) {
-								}
-							}
 					}
 
 					txtCont.setText("" + cont);
@@ -200,6 +193,7 @@ public class EliminarInventario extends JFrame {
 
 		btnLimpiar = new JButton("Limpiar");
 		btnLimpiar.addActionListener(new ActionListener() {
+
 			public void actionPerformed(ActionEvent arg0) {
 				limipar();
 
@@ -248,7 +242,7 @@ public class EliminarInventario extends JFrame {
 				String desde = sdf.format(Desde.getDate());
 				String Hastaa = sdf.format(Hasta.getDate());
 
-				if(Tabla.getModel().getRowCount()!=0) {
+				if (Tabla.getModel().getRowCount() != 0) {
 					int ax = JOptionPane.showConfirmDialog(null, "Desea Eliminar Busqueda Anterior");
 					if (ax == JOptionPane.YES_OPTION) {
 						limipar();
@@ -304,15 +298,14 @@ public class EliminarInventario extends JFrame {
 						for (int i = 0; i < Tabla.getModel().getRowCount(); i++) {
 
 							String cod = String.valueOf(tm.getValueAt(i, 0)).toUpperCase();
-							log.warn( sfd2.format(fecha.getTime()) + " se da de baja la cinta "+ cod);
+							log.warn(sfd2.format(fecha.getTime()) + " se da de baja la cinta " + cod);
 							boolean valida = ModifDeBAja(cod);
 							if (valida) {
 								count++;
 							}
-							
 
 						}
-						
+
 						while (mod.getRowCount() > 0) {
 
 							mod.removeRow(0);
@@ -320,7 +313,7 @@ public class EliminarInventario extends JFrame {
 							txtCont.setText("" + cont);
 						}
 						JOptionPane.showMessageDialog(null, count + " Archivo/s Dados de Baja ");
-						
+
 					}
 
 					else if (ax == JOptionPane.NO_OPTION) {
@@ -353,11 +346,10 @@ public class EliminarInventario extends JFrame {
 
 							boolean valida = Eliminar(cod);
 							if (valida) {
-								log.warn(sfd2.format(fecha.getTime())+" Se elimina la cinta "+ cod);
+								log.warn(sfd2.format(fecha.getTime()) + " Se elimina la cinta " + cod);
 								mod.removeRow(Tabla.getSelectedRow());
 								cont = cont - 1;
 								txtCont.setText("" + cont);
-								
 
 							}
 							JOptionPane.showMessageDialog(null, " Archivo Eliminado ");
@@ -370,7 +362,7 @@ public class EliminarInventario extends JFrame {
 
 						boolean valida = ModifDeBAja(cod);
 						if (valida) {
-							log.warn(sfd2.format(fecha.getTime())+" Se da de Baja la cinta "+ cod);
+							log.warn(sfd2.format(fecha.getTime()) + " Se da de Baja la cinta " + cod);
 							mod.removeRow(Tabla.getSelectedRow());
 							cont = cont - 1;
 							txtCont.setText("" + cont);
@@ -457,10 +449,9 @@ public class EliminarInventario extends JFrame {
 					+ "	   Inventario.Valija,\r\n" + "	   Inventario.Continuacion,\r\n"
 					+ "	   Inventario.Observaciones,\r\n" + "	   Inventario.Solicitado,\r\n"
 					+ "	   Inventario.Responsable,\r\n" + "	   Servidor.Nombre,\r\n"
-					+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio,\r\n" + "  Inventario.Estado\r\n" 
-					+ "from inventario \r\n"
-					+ "inner join Cinta\r\n" + "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n"
-					+ "inner join Plataforma\r\n"
+					+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio,\r\n" + "  Inventario.Estado\r\n"
+					+ "from inventario \r\n" + "inner join Cinta\r\n"
+					+ "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n" + "inner join Plataforma\r\n"
 					+ "		on Plataforma.idPlataforma = Inventario.Plataforma_idPlataforma\r\n" + "inner join Pais\r\n"
 					+ "		on Pais.idPais = Inventario.Pais_idPais\r\n" + "inner join Ubicacion\r\n"
 					+ "		on Ubicacion.idUbicacion = Inventario.Ubicacion_Bodega\r\n" + "inner join Destino\r\n"
@@ -493,11 +484,11 @@ public class EliminarInventario extends JFrame {
 		}
 
 	}
-	
-	private boolean buscarAnt(String cod) {
+
+	private void buscarAnt(String cod) {
 		try {
 
-			String sql =  "select\r\n " + "    Inventario.idInventario,\r\n" + "	   Cinta.Modelo,\r\n"
+			String sql = "select\r\n " + "    Inventario.idInventario,\r\n" + "	   Cinta.Modelo,\r\n"
 					+ "	   Cinta.Marca,\r\n" + "	   Cinta.Categoria,\r\n" + "	   Inventario.Contenido,\r\n"
 					+ "	   Inventario.retencion,\r\n" + "	   Plataforma.Nombre,\r\n"
 					+ "	   Inventario.Fecha_Plataforma,\r\n" + "	   Inventario.Fecha_Exp,\r\n"
@@ -506,36 +497,35 @@ public class EliminarInventario extends JFrame {
 					+ "	   Inventario.Valija,\r\n" + "	   Inventario.Continuacion,\r\n"
 					+ "	   Inventario.Observaciones,\r\n" + "	   Inventario.Solicitado,\r\n"
 					+ "	   Inventario.Responsable,\r\n" + "	   Servidor.Nombre,\r\n"
-					+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio,\r\n" + "  Inventario.Estado\r\n" 
-					+ "from inventario \r\n"
-					+ "inner join Cinta\r\n" + "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n"
-					+ "inner join Plataforma\r\n"
+					+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio,\r\n" + "  Inventario.Estado\r\n"
+					+ "from inventario \r\n" + "inner join Cinta\r\n"
+					+ "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n" + "inner join Plataforma\r\n"
 					+ "		on Plataforma.idPlataforma = Inventario.Plataforma_idPlataforma\r\n" + "inner join Pais\r\n"
 					+ "		on Pais.idPais = Inventario.Pais_idPais\r\n" + "inner join Ubicacion\r\n"
 					+ "		on Ubicacion.idUbicacion = Inventario.Ubicacion_Bodega\r\n" + "inner join Destino\r\n"
 					+ "		on Destino.idDestino = Inventario.Destino_Actual\r\n" + "inner join Servidor\r\n"
 					+ "		on Servidor.idServidor = Inventario.Servidor_idServidor\r\n"
-					+ "where Inventario.idInventario LIKE '"+ cod + "%' AND Estado <> 'DE BAJA';";
+					+ "where Inventario.idInventario LIKE '" + cod + "%' AND Estado <> 'DE BAJA';";
 
 			PreparedStatement stm = conn.prepareStatement(sql);
 			ResultSet rs = stm.executeQuery();
 
 			ResultSetMetaData rsm = rs.getMetaData();
-			if (rs.next()) {
-				while (rs.next()) {
-					Object[] raws = new Object[rsm.getColumnCount()];
-					for (int i = 0; i < raws.length; i++) {
-						raws[i] = rs.getObject(i + 1);
+			// if (rs.next()) {
+			while (rs.next()) {
+				Object[] raws = new Object[rsm.getColumnCount()];
+				for (int i = 0; i < raws.length; i++) {
+					raws[i] = rs.getObject(i + 1);
 
-					}
-					mod.addRow(raws);
-					cont++;
 				}
-
-				return true;
-			} else {
-				return false;
+				mod.addRow(raws);
+				cont++;
 			}
+
+			// return true;
+			// } else {
+			// return false;
+			// }
 
 		} catch (Exception e) {
 			throw new IllegalArgumentException(e.getMessage());
@@ -556,10 +546,9 @@ public class EliminarInventario extends JFrame {
 						+ "	   Inventario.Valija,\r\n" + "	   Inventario.Continuacion,\r\n"
 						+ "	   Inventario.Observaciones,\r\n" + "	   Inventario.Solicitado,\r\n"
 						+ "	   Inventario.Responsable,\r\n" + "	   Servidor.Nombre,\r\n"
-						+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio,\r\n" + "  Inventario.Estado\r\n"
-						+ "from inventario \r\n"
-						+ "inner join Cinta\r\n" + "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n"
-						+ "inner join Plataforma\r\n"
+						+ "	   Inventario.Lugar_Requerido,\r\n" + "	   Inventario.mes_anio,\r\n"
+						+ "  Inventario.Estado\r\n" + "from inventario \r\n" + "inner join Cinta\r\n"
+						+ "     on Cinta.idCinta = Inventario.Cinta_idCinta\r\n" + "inner join Plataforma\r\n"
 						+ "		on Plataforma.idPlataforma = Inventario.Plataforma_idPlataforma\r\n"
 						+ "inner join Pais\r\n" + "		on Pais.idPais = Inventario.Pais_idPais\r\n"
 						+ "inner join Ubicacion\r\n"
