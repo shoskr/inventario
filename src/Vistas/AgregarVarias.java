@@ -98,6 +98,11 @@ public class AgregarVarias extends JFrame {
 					Inventario inv = new Inventario();
 					Cont_Inventario cn = new Cont_Inventario();
 					String Letras = txtLetras.getText().toUpperCase();
+					if(Letras.length()>2) {
+						JOptionPane.showMessageDialog(null, "Nomenclatura debe ser igual a 2 caracteres");
+						return;
+					}
+					
 					int num = Integer.parseInt(txtRangoIni.getText());
 					int can = Integer.parseInt(txtCant.getText());
 					
@@ -124,9 +129,21 @@ public class AgregarVarias extends JFrame {
 						
 						inv.setIdInventario(Letras+id);
 						inv.setCinta_idCinta(cinta);
+						inv.setContenido("");
+						inv.setRetencion("");
+						inv.setContinuacion("");
+						inv.setObservaciones("");
+						inv.setResponsable("");
+						inv.setSolicitado("");
+						inv.setLugar_Requerido("");
+						inv.setMes_anio("");
+						inv.setValija("");
 						inv.setPlataforma(1);
 						inv.setPais_idPais(1);
 						inv.setFecha_Plataforma(sdf.format(fecha.getTime()));
+						inv.setFecha_Exp(sdf.format(fecha.getTime()));
+						inv.setFecha_ultim(sdf.format(fecha.getTime()));
+						inv.setFecha_Exp(sdf.format(fecha.getTime()));
 						inv.setUbicacion_Bodega(1);
 						inv.setDestino_Actual(1);
 						inv.setServidor(1);
@@ -142,7 +159,7 @@ public class AgregarVarias extends JFrame {
 						Boolean valida = cn.ingresarInventario(inv);
 						
 						if(valida) {
-							log.info(sfd2.format(fecha.getTime()) + "Se Ingresa nueva Cinta Disponibles" + inv.getIdInventario());
+							log.info(sfd2.format(fecha.getTime()) + " Se Ingresa nueva Cinta Disponibles" + inv.getIdInventario());
 						}	
 						
 						Ultima = inv.getIdInventario();

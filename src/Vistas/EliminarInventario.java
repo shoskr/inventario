@@ -115,8 +115,8 @@ public class EliminarInventario extends JFrame {
 						"Responsable", "Servidor", "Lugar Requerido", "Mes y Año", "Estado" }) {
 
 			private static final long serialVersionUID = 1L;
-			boolean[] columnEditables = new boolean[] { false, false, false, false, true, true, false, true, true, true,
-					false, false, false, true, true, true, true, true, false, true, true, true };
+			boolean[] columnEditables = new boolean[] { false, false, false, false, false, false, false, false, false, false,
+					false, false, false, false, false, false, false, false, false, false, false, false, };
 
 			public boolean isCellEditable(int row, int column) {
 				return columnEditables[column];
@@ -146,7 +146,8 @@ public class EliminarInventario extends JFrame {
 		Tabla.getColumnModel().getColumn(18).setPreferredWidth(100);
 		Tabla.getColumnModel().getColumn(19).setPreferredWidth(110);
 		Tabla.getColumnModel().getColumn(20).setPreferredWidth(140);
-
+		Tabla.getColumnModel().getColumn(21).setPreferredWidth(100);
+		
 		jScrollPane1.setViewportView(Tabla);
 		contentPane.setLayout(null);
 
@@ -170,7 +171,15 @@ public class EliminarInventario extends JFrame {
 					if (valida) {
 
 					} else {
-						buscarAnt(Cod);
+						boolean valida2 = buscarAnt(Cod);
+						if (valida2) {
+
+						} else {
+							boolean valida3 = buscar(Cod);
+							if (valida3) {
+
+							}
+						}
 
 					}
 
@@ -463,17 +472,17 @@ public class EliminarInventario extends JFrame {
 			ResultSet rs = stm.executeQuery();
 
 			ResultSetMetaData rsm = rs.getMetaData();
-			if (rs.next()) {
-				while (rs.next()) {
-					Object[] raws = new Object[rsm.getColumnCount()];
-					for (int i = 0; i < raws.length; i++) {
-						raws[i] = rs.getObject(i + 1);
 
-					}
-					mod.addRow(raws);
-					cont++;
+			while (rs.next()) {
+				Object[] raws = new Object[rsm.getColumnCount()];
+				for (int i = 0; i < raws.length; i++) {
+					raws[i] = rs.getObject(i + 1);
+
 				}
-
+				mod.addRow(raws);
+				cont++;
+			}
+			if (rs.next()) {
 				return true;
 			} else {
 				return false;
@@ -485,7 +494,7 @@ public class EliminarInventario extends JFrame {
 
 	}
 
-	private void buscarAnt(String cod) {
+	private boolean buscarAnt(String cod) {
 		try {
 
 			String sql = "select\r\n " + "    Inventario.idInventario,\r\n" + "	   Cinta.Modelo,\r\n"
@@ -511,7 +520,7 @@ public class EliminarInventario extends JFrame {
 			ResultSet rs = stm.executeQuery();
 
 			ResultSetMetaData rsm = rs.getMetaData();
-			// if (rs.next()) {
+
 			while (rs.next()) {
 				Object[] raws = new Object[rsm.getColumnCount()];
 				for (int i = 0; i < raws.length; i++) {
@@ -522,10 +531,11 @@ public class EliminarInventario extends JFrame {
 				cont++;
 			}
 
-			// return true;
-			// } else {
-			// return false;
-			// }
+			if (cont >= 1) {
+				return true;
+			} else {
+				return false;
+			}
 
 		} catch (Exception e) {
 			throw new IllegalArgumentException(e.getMessage());
@@ -602,9 +612,12 @@ public class EliminarInventario extends JFrame {
 		}
 	}
 
-	private boolean ModifDeBAja(String cod) {
+	private boolean ModifDeBAja(String cod ) {
 		try {
-			String sql = "update Inventario set estado = 'DE BAJA' where idInventario =? ";
+			
+			String fech = sdf.format(fecha.getTime());
+			
+			String sql = "update Inventario set Fecha_ultim = '"+ fech +"' estado = 'DE BAJA' where idInventario =? ";
 
 			PreparedStatement pstm = conn.prepareCall(sql);
 			pstm.setString(1, cod);

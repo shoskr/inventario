@@ -39,7 +39,6 @@ import java.awt.Dimension;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 
-
 public class ModificarVarios extends JFrame {
 
 	/**
@@ -189,7 +188,7 @@ public class ModificarVarios extends JFrame {
 		contentPane.add(btnBuscar);
 
 		txtCod = new JTextField();
-		txtCod.setBounds(10, 311, 142, 20);
+		txtCod.setBounds(20, 312, 142, 20);
 		contentPane.add(txtCod);
 		txtCod.setColumns(10);
 
@@ -227,6 +226,8 @@ public class ModificarVarios extends JFrame {
 		btnQuitar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
+				
+				
 				mod.removeRow(Tabla.getSelectedRow());
 
 				cont = cont - 1;
@@ -242,27 +243,25 @@ public class ModificarVarios extends JFrame {
 				try {
 					PropertyConfigurator.configure("log4j.properties");
 
-					
-					
-					int plat = cboPlata.getSelectedIndex()+1;
-					int pais = cboPais.getSelectedIndex()+1;
-					int ubi = cboubicac.getSelectedIndex()+1;
-					int destino = cboDesti.getSelectedIndex()+1;
-					int serv = cboServ.getSelectedIndex()+1;
+					int plat = cboPlata.getSelectedIndex() + 1;
+					int pais = cboPais.getSelectedIndex() + 1;
+					int ubi = cboubicac.getSelectedIndex() + 1;
+					int destino = cboDesti.getSelectedIndex() + 1;
+					int serv = cboServ.getSelectedIndex() + 1;
 					String fech = sdf.format(fecha.getTime());
-					
-					int Anio  = Integer.parseInt(txtAnio.getText());
-					
-					if(Anio<1980 && Anio>2150) {
+
+					int Anio = Integer.parseInt(txtAnio.getText());
+
+					if (Anio < 1980 && Anio > 2150) {
 						JOptionPane.showMessageDialog(null, "Año Fuera de rango");
 						return;
 					}
-					
+
 					Calendar c1 = Calendar.getInstance();
 					c1.add(Calendar.YEAR, 10);
-					String FechUl =sdf.format(c1.getTime());
+					String FechUl = sdf.format(c1.getTime());
 					String MesAnio = cboMes.getSelectedItem() + " - " + Anio;
-					String Estado = cboEstado.getSelectedItem()+"";
+					String Estado = cboEstado.getSelectedItem() + "";
 
 					DefaultTableModel tm = (DefaultTableModel) Tabla.getModel();
 
@@ -274,29 +273,28 @@ public class ModificarVarios extends JFrame {
 						inv.setContenido(cont);
 						String reten = String.valueOf(((String) tm.getValueAt(i, 5)).toUpperCase()) + " ";
 						inv.setRetencion(reten);
-						String valija = String.valueOf(((String) tm.getValueAt(i, 13)).toUpperCase())+ " ";
+						String valija = String.valueOf(((String) tm.getValueAt(i, 13)).toUpperCase()) + " ";
 						inv.setValija(valija);
-						String conti = String.valueOf(((String) tm.getValueAt(i, 14)).toUpperCase())+ " ";
+						String conti = String.valueOf(((String) tm.getValueAt(i, 14)).toUpperCase()) + " ";
 						inv.setContinuacion(conti);
-						String obser = String.valueOf(((String) tm.getValueAt(i, 15)).toUpperCase())+ " ";
+						String obser = String.valueOf(((String) tm.getValueAt(i, 15)).toUpperCase()) + " ";
 						inv.setObservaciones(obser);
-						String Solici = String.valueOf(((String) tm.getValueAt(i, 16)).toUpperCase())+ " ";
+						String Solici = String.valueOf(((String) tm.getValueAt(i, 16)).toUpperCase()) + " ";
 						inv.setSolicitado(Solici);
-						String resp = String.valueOf(((String) tm.getValueAt(i, 17)).toUpperCase())+ " ";
+						String resp = String.valueOf(((String) tm.getValueAt(i, 17)).toUpperCase()) + " ";
 						inv.setResponsable(resp);
-						String Luga = String.valueOf(((String) tm.getValueAt(i, 19)).toUpperCase())+ " ";
+						String Luga = String.valueOf(((String) tm.getValueAt(i, 19)).toUpperCase()) + " ";
 						inv.setLugar_Requerido(Luga);
-						
-						
 
-						boolean valida = ActualizarInventario(inv, cod,plat, FechUl,fech, pais, ubi, destino, serv, MesAnio, Estado );
+						boolean valida = ActualizarInventario(inv, cod, plat, FechUl, fech, pais, ubi, destino, serv,
+								MesAnio, Estado);
 						if (valida) {
 							log.warn(sfd2.format(fecha.getTime()) + " Se modifica la cinta " + cod);
 						}
 
 					}
 					JOptionPane.showMessageDialog(null, "Se modificoaro Las tablas");
-					
+
 					cboDesti.setSelectedIndex(0);
 					cboMes.setSelectedIndex(0);
 					cboPais.setSelectedIndex(0);
@@ -305,12 +303,10 @@ public class ModificarVarios extends JFrame {
 					cboPlata.setSelectedIndex(0);
 					cboEstado.setSelectedIndex(0);
 					limipar();
-					
-					
 
 				} catch (Exception ex) {
 					log.warn(sfd2.format(fecha.getTime()) + " -> " + ex.getMessage());
-					
+
 				}
 			}
 		});
@@ -352,30 +348,32 @@ public class ModificarVarios extends JFrame {
 		cboPais = new JComboBox<String>();
 		cboPais.setBounds(144, 454, 138, 20);
 		contentPane.add(cboPais);
-		
+
 		JLabel lblPais = new JLabel("Pais");
 		lblPais.setBounds(45, 457, 46, 14);
 		contentPane.add(lblPais);
-		
+
 		lblMesYAo = new JLabel("Mes y A\u00F1o ");
 		lblMesYAo.setBounds(321, 457, 94, 14);
 		contentPane.add(lblMesYAo);
-		
+
 		cboMes = new JComboBox<String>();
-		cboMes.setModel(new DefaultComboBoxModel<String>(new String[] {"ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"}));
+		cboMes.setModel(new DefaultComboBoxModel<String>(new String[] { "ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO",
+				"JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE" }));
 		cboMes.setBounds(454, 454, 149, 20);
 		contentPane.add(cboMes);
-		
+
 		txtAnio = new JTextField();
 		txtAnio.setBounds(624, 454, 56, 20);
 		contentPane.add(txtAnio);
 		txtAnio.setColumns(10);
-		
+
 		cboEstado = new JComboBox<Object>();
-		cboEstado.setModel(new DefaultComboBoxModel<Object>(new String[] {"DISPONIBLE", "ALMACENADO", "EN TRANCITO", "DE BAJA"}));
+		cboEstado.setModel(new DefaultComboBoxModel<Object>(
+				new String[] { "DISPONIBLE", "ALMACENADO", "EN TRANCITO", "DE BAJA" }));
 		cboEstado.setBounds(452, 506, 149, 20);
 		contentPane.add(cboEstado);
-		
+
 		lblEstadoCinta = new JLabel("Estado Cinta");
 		lblEstadoCinta.setBounds(321, 509, 81, 14);
 		contentPane.add(lblEstadoCinta);
@@ -456,17 +454,17 @@ public class ModificarVarios extends JFrame {
 			ResultSet rs = stm.executeQuery();
 
 			ResultSetMetaData rsm = rs.getMetaData();
-			if (rs.next()) {
-				while (rs.next()) {
-					Object[] raws = new Object[rsm.getColumnCount()];
-					for (int i = 0; i < raws.length; i++) {
-						raws[i] = rs.getObject(i + 1);
 
-					}
-					mod.addRow(raws);
-					cont++;
+			while (rs.next()) {
+				Object[] raws = new Object[rsm.getColumnCount()];
+				for (int i = 0; i < raws.length; i++) {
+					raws[i] = rs.getObject(i + 1);
+
 				}
-
+				mod.addRow(raws);
+				cont++;
+			}
+			if (rs.next()) {
 				return true;
 			} else {
 				return false;
@@ -504,20 +502,17 @@ public class ModificarVarios extends JFrame {
 			ResultSet rs = stm.executeQuery();
 
 			ResultSetMetaData rsm = rs.getMetaData();
-			if (rs.next()) {
-				while (rs.next()) {
-					Object[] raws = new Object[rsm.getColumnCount()];
-					for (int i = 0; i < raws.length; i++) {
-						raws[i] = rs.getObject(i + 1);
 
-					}
-					mod.addRow(raws);
-					cont++;
+			while (rs.next()) {
+				Object[] raws = new Object[rsm.getColumnCount()];
+				for (int i = 0; i < raws.length; i++) {
+					raws[i] = rs.getObject(i + 1);
+
 				}
-
-			} else {
-				JOptionPane.showMessageDialog(null, "no se encontro resultado");
+				mod.addRow(raws);
+				cont++;
 			}
+			
 
 		} catch (Exception e) {
 			throw new IllegalArgumentException(e.getMessage());
@@ -525,36 +520,24 @@ public class ModificarVarios extends JFrame {
 
 	}
 
-	public boolean ActualizarInventario(Inventario inv, String cod, int plat, String fech,String fechUl, int pais, int ubi, int dest, int serv, String mesAni, String esta ) {
+	public boolean ActualizarInventario(Inventario inv, String cod, int plat, String fech, String fechUl, int pais,
+			int ubi, int dest, int serv, String mesAni, String esta) {
 
 		try {
-			String sql = "update Inventario \n" 
-					+ "set Contenido = ?,\n" 
-					+ "retencion = ?,\n"
-					+ "Plataforma_idPlataforma = ?,\n" 
-					+ "Fecha_Exp = ?,\n" 
-					+ "Fecha_ultim = ?,\n"
-					+ "Pais_idPais = ?,\n" 
-					+ "Ubicacion_Bodega = ?,\n" 
-					+ "Destino_Actual = ?,\n" 
-					+ "Valija = ?,\n"
-					+ "Continuacion = ?,\n" 
-					+ "Observaciones = ?,\n" 
-					+ "Solicitado = ?,\n" 
-					+ "Responsable = ?,\n"
-					+ "Servidor_idServidor =?,\n" 
-					+ "Lugar_Requerido = ?,\n" 
-					+ "mes_anio = ?,\n" 
-					+ "Estado = ?\n"
+			String sql = "update Inventario \n" + "set Contenido = ?,\n" + "retencion = ?,\n"
+					+ "Plataforma_idPlataforma = ?,\n" + "Fecha_Exp = ?,\n" + "Fecha_ultim = ?,\n"
+					+ "Pais_idPais = ?,\n" + "Ubicacion_Bodega = ?,\n" + "Destino_Actual = ?,\n" + "Valija = ?,\n"
+					+ "Continuacion = ?,\n" + "Observaciones = ?,\n" + "Solicitado = ?,\n" + "Responsable = ?,\n"
+					+ "Servidor_idServidor =?,\n" + "Lugar_Requerido = ?,\n" + "mes_anio = ?,\n" + "Estado = ?\n"
 					+ "where idInventario = ?";
 
 			PreparedStatement pstm = conn.prepareCall(sql);
-		
+
 			pstm.setString(1, inv.getContenido());
 			pstm.setString(2, inv.getRetencion());
 			pstm.setInt(3, plat);
 			pstm.setString(4, fech);
-			pstm.setString(5,fechUl);
+			pstm.setString(5, fechUl);
 			pstm.setInt(6, pais);
 			pstm.setInt(7, ubi);
 			pstm.setInt(8, dest);
@@ -568,7 +551,7 @@ public class ModificarVarios extends JFrame {
 			pstm.setString(16, mesAni);
 			pstm.setString(17, esta);
 			pstm.setString(18, cod);
-			
+
 			int x = pstm.executeUpdate();
 			return x > 0 ? true : false;
 
@@ -579,9 +562,9 @@ public class ModificarVarios extends JFrame {
 	}
 
 	private void CargarCbos() {
-		
+
 		SimpleDateFormat sd = new SimpleDateFormat("YYYY");
-		
+
 		txtAnio.setText(sd.format(fecha.getTime()));
 
 		Cont_Pais CP = new Cont_Pais();
@@ -618,7 +601,7 @@ public class ModificarVarios extends JFrame {
 		}
 
 	}
-	
+
 	private void limipar() {
 		try {
 			while (mod.getRowCount() > 0) {

@@ -257,7 +257,7 @@ public class Listar_Inventario extends JFrame {
 						}
 
 					}
-					log.info(sfd2.format(fecha.getTime())+ "Se crea Un achivo .xls llamado " + nombre );
+					log.info(sfd2.format(fecha.getTime())+ "Se crea Un achivo  en "+ rutaArchivo );
 
 					libro.write(archivo);
 					archivo.close();
