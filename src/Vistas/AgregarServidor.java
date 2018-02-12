@@ -48,9 +48,8 @@ public class AgregarServidor extends JFrame {
 	private JScrollPane jScrollPane1;
 	private JTable Tabla;
 	private final static Logger log = Logger.getLogger(AgregarServidor.class);
-	private Calendar fecha =  Calendar.getInstance();
+	private Calendar fecha = Calendar.getInstance();
 	private SimpleDateFormat sfd2 = new SimpleDateFormat(" dd/MM/YYYY - HH:mm:ss");
-
 
 	/**
 	 * Launch the application.
@@ -84,7 +83,7 @@ public class AgregarServidor extends JFrame {
 		JButton btnVolver = new JButton("Volver");
 		btnVolver.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+
 				dispose();
 			}
 		});
@@ -100,7 +99,7 @@ public class AgregarServidor extends JFrame {
 		button_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				PropertyConfigurator.configure("log4j.properties");
-				
+
 				Servidor servi = new Servidor();
 
 				if (txtSer.getText().length() > 0) {
@@ -109,7 +108,7 @@ public class AgregarServidor extends JFrame {
 					Cont_Servidor cs = new Cont_Servidor();
 					ArrayList<Servidor> list = new ArrayList<>();
 					list = cs.listar();
-					
+
 					for (Servidor servidor : list) {
 						if (servidor.getNombre().equals(txtSer.getText().toUpperCase())) {
 							JOptionPane.showMessageDialog(null, "Servidor ya Existente");
@@ -121,11 +120,11 @@ public class AgregarServidor extends JFrame {
 
 					if (valida) {
 						JOptionPane.showMessageDialog(null, "Guardo");
-						log.info(sfd2.format(fecha.getTime()) + "Se agregar Servidor "+ servi.getNombre());
+						log.info(sfd2.format(fecha.getTime()) + "Se agregar Servidor " + servi.getNombre());
 					} else {
 						JOptionPane.showMessageDialog(null, "No Guardo");
 					}
-				}else {
+				} else {
 					JOptionPane.showMessageDialog(null, "Ingrese Servidor");
 				}
 				LimpiarTabla();
@@ -140,29 +139,38 @@ public class AgregarServidor extends JFrame {
 		txtSer.setColumns(10);
 		txtSer.setBounds(104, 29, 258, 20);
 		contentPane.add(txtSer);
-		
-		
+
 		// ---------------------
 		jScrollPane1 = new javax.swing.JScrollPane();
 		jScrollPane1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		jScrollPane1.setAutoscrolls(true);
 		jScrollPane1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 
-		jScrollPane1.setBounds(121, 124, 162, 100);
+		jScrollPane1.setBounds(86, 128, 276, 100);
 		Tabla = new javax.swing.JTable();
+		Tabla.setSelectionBackground(Color.WHITE);
 		Tabla.setColumnSelectionAllowed(true);
 		Tabla.setCellSelectionEnabled(true);
-		Tabla.setAutoscrolls(false);
+		Tabla.setAutoscrolls(true);
 		Tabla.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		Tabla.setSurrendersFocusOnKeystroke(true);
 		Tabla.setAutoCreateRowSorter(true);
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
 
-		mod = new DefaultTableModel(new Object[][] {}, new String[] { "Codigo", "Servidor",  });
+		mod = new DefaultTableModel(new Object[][] {}, new String[] { "Codigo", "Servidor", }) {
+			private static final long serialVersionUID = 1L;
+			boolean[] columnEditables = new boolean[] { false, false, };
+
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+		};
 
 		Tabla.setModel(mod);
-
+		Tabla.getColumnModel().getColumn(0).setPreferredWidth(130);
+		Tabla.getColumnModel().getColumn(1).setPreferredWidth(130);
+		
 		jScrollPane1.setViewportView(Tabla);
 		contentPane.setLayout(null);
 
@@ -193,9 +201,9 @@ public class AgregarServidor extends JFrame {
 		} catch (Exception e) {
 			throw new IllegalArgumentException(e.getMessage());
 		}
-		
+
 	}
-	
+
 	private void LimpiarTabla() {
 		while (mod.getRowCount() > 0) {
 

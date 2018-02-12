@@ -305,8 +305,8 @@ public class ModificarInventario extends JFrame {
 
 					String mes_anio = cbomes.getSelectedItem() + " - " + anio;
 					String estado = cboEstado.getSelectedItem() + "";
-					Inventario invs = new Inventario();
-					invs = inv;
+					
+					
 					inv.setCinta_idCinta(Cinta_idCinta);
 					inv.setContenido(Contenido);
 					inv.setRetencion(retencion);
@@ -333,7 +333,7 @@ public class ModificarInventario extends JFrame {
 
 					if (valida) {
 						
-						log.warn(sfd2.format(fecha.getTime())+ " Se modifica Inventario de " + invs.toString() + " a " + inv.toString());
+						log.warn(sfd2.format(fecha.getTime())+ " Se modifica Inventario de " + inv.getIdInventario());
 						
 						JOptionPane.showMessageDialog(null, "modificado");
 					} else {

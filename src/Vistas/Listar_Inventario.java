@@ -43,7 +43,6 @@ import javax.swing.JRadioButton;
 import javax.swing.JComboBox;
 import com.toedter.calendar.JDateChooser;
 import java.awt.Color;
-import java.awt.Dimension;
 import javax.swing.DefaultComboBoxModel;
 
 public class Listar_Inventario extends JFrame {
@@ -111,7 +110,6 @@ public class Listar_Inventario extends JFrame {
 		jScrollPane1.setBounds(10, 46, 674, 237);
 		Tabla = new javax.swing.JTable();
 		Tabla.setSelectionBackground(Color.WHITE);
-		Tabla.setMaximumSize(new Dimension(11, 5));
 		Tabla.setColumnSelectionAllowed(true);
 		Tabla.setCellSelectionEnabled(true);
 		Tabla.setAutoscrolls(true);

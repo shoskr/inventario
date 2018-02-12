@@ -47,7 +47,7 @@ public class AgregarUbicacion extends JFrame {
 	private JScrollPane jScrollPane1;
 	private JTable Tabla;
 	private final static Logger log = Logger.getLogger(AgregarUbicacion.class);
-	private Calendar fecha =  Calendar.getInstance();
+	private Calendar fecha = Calendar.getInstance();
 	private SimpleDateFormat sfd2 = new SimpleDateFormat(" dd/MM/YYYY - HH:mm:ss");
 
 	/**
@@ -84,7 +84,14 @@ public class AgregarUbicacion extends JFrame {
 
 		mod = new DefaultTableModel(new Object[][] {
 
-		}, new String[] { "id", "Nombre" });
+		}, new String[] { "id", "Nombre" }) {
+			private static final long serialVersionUID = 1L;
+			boolean[] columnEditables = new boolean[] { false, false, };
+
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+		};
 		contentPane.setLayout(null);
 
 		llenarTabla();
@@ -106,12 +113,12 @@ public class AgregarUbicacion extends JFrame {
 				PropertyConfigurator.configure("log4j.properties");
 				if (ubic.length() > 0) {
 					Cont_Ubicacion cnubi = new Cont_Ubicacion();
-					Ubicacion ubi = new Ubicacion();			
+					Ubicacion ubi = new Ubicacion();
 					ubi.setLugar(ubic);
-					ArrayList<Ubicacion>list = new ArrayList<>();
+					ArrayList<Ubicacion> list = new ArrayList<>();
 					list = cnubi.listUBI();
 					for (Ubicacion ubicacion : list) {
-						if(ubicacion.getLugar().equals(ubic)) {
+						if (ubicacion.getLugar().equals(ubic)) {
 							JOptionPane.showMessageDialog(null, "Ubicacion ya Existente");
 							return;
 						}
@@ -122,7 +129,7 @@ public class AgregarUbicacion extends JFrame {
 					lblUbicacion.setText(valida + "");
 					if (valida) {
 						JOptionPane.showMessageDialog(null, "Ubicacion Ingresada");
-						log.warn(sfd2.format(fecha.getTime())+ " Se agrega Nueva Ubicacion " + ubi.getLugar());
+						log.warn(sfd2.format(fecha.getTime()) + " Se agrega Nueva Ubicacion " + ubi.getLugar());
 						while (mod.getRowCount() > 0) {
 
 							mod.removeRow(0);
@@ -147,7 +154,6 @@ public class AgregarUbicacion extends JFrame {
 		btnVolver.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
-				
 				dispose();
 			}
 		});
@@ -158,8 +164,7 @@ public class AgregarUbicacion extends JFrame {
 		contentPane.add(txtUbi);
 		contentPane.add(btnGuardar);
 		contentPane.add(btnVolver);
-		
-		
+
 		// ---------------------
 		jScrollPane1 = new javax.swing.JScrollPane();
 		jScrollPane1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -168,18 +173,28 @@ public class AgregarUbicacion extends JFrame {
 
 		jScrollPane1.setBounds(95, 124, 277, 100);
 		Tabla = new javax.swing.JTable();
+		Tabla.setSelectionBackground(Color.WHITE);
 		Tabla.setColumnSelectionAllowed(true);
 		Tabla.setCellSelectionEnabled(true);
-		Tabla.setAutoscrolls(false);
+		Tabla.setAutoscrolls(true);
 		Tabla.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		Tabla.setSurrendersFocusOnKeystroke(true);
 		Tabla.setAutoCreateRowSorter(true);
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
 
-		mod = new DefaultTableModel(new Object[][] {}, new String[] { "Codigo", "Ubicacion",  });
+		mod = new DefaultTableModel(new Object[][] {}, new String[] { "Codigo", "Ubicacion", }){
+			private static final long serialVersionUID = 1L;
+			boolean[] columnEditables = new boolean[] { false, false, };
+
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+		};
 
 		Tabla.setModel(mod);
+		Tabla.getColumnModel().getColumn(0).setPreferredWidth(130);
+		Tabla.getColumnModel().getColumn(1).setPreferredWidth(130);
 
 		jScrollPane1.setViewportView(Tabla);
 		contentPane.setLayout(null);
@@ -190,9 +205,7 @@ public class AgregarUbicacion extends JFrame {
 		jScrollPane1.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[] { Tabla }));
 
 		// --------------------------------
-		
-		
-		
+
 	}
 
 	private void llenarTabla() {
@@ -216,6 +229,7 @@ public class AgregarUbicacion extends JFrame {
 		}
 
 	}
+
 	private void LimpiarTabla() {
 		while (mod.getRowCount() > 0) {
 

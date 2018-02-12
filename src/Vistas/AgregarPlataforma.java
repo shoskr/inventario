@@ -147,21 +147,30 @@ public class AgregarPlataforma extends JFrame {
 		jScrollPane1.setAutoscrolls(true);
 		jScrollPane1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 
-		jScrollPane1.setBounds(126, 125, 162, 100);
+		jScrollPane1.setBounds(91, 125, 283, 100);
 		Tabla = new javax.swing.JTable();
+		Tabla.setSelectionBackground(Color.WHITE);
 		Tabla.setColumnSelectionAllowed(true);
 		Tabla.setCellSelectionEnabled(true);
-		Tabla.setAutoscrolls(false);
+		Tabla.setAutoscrolls(true);
 		Tabla.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		Tabla.setSurrendersFocusOnKeystroke(true);
 		Tabla.setAutoCreateRowSorter(true);
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
 
-		mod = new DefaultTableModel(new Object[][] {}, new String[] { "Codigo", "Plataforma", });
+		mod = new DefaultTableModel(new Object[][] {}, new String[] { "Codigo", "Plataforma", }){
+			private static final long serialVersionUID = 1L;
+			boolean[] columnEditables = new boolean[] { false, false, };
+
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+		};
 
 		Tabla.setModel(mod);
-
+		Tabla.getColumnModel().getColumn(0).setPreferredWidth(130);
+		Tabla.getColumnModel().getColumn(1).setPreferredWidth(132);
 		jScrollPane1.setViewportView(Tabla);
 		contentPane.setLayout(null);
 

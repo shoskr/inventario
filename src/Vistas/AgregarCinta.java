@@ -50,7 +50,7 @@ public class AgregarCinta extends JFrame {
 	private JScrollPane jScrollPane1;
 	private JTable Tabla;
 	private final static Logger log = Logger.getLogger(AgregarCinta.class);
-	private Calendar fecha =  Calendar.getInstance();
+	private Calendar fecha = Calendar.getInstance();
 	private SimpleDateFormat sfd2 = new SimpleDateFormat(" dd/MM/YYYY - HH:mm:ss");
 
 	/**
@@ -75,7 +75,7 @@ public class AgregarCinta extends JFrame {
 	public AgregarCinta() {
 		setTitle("Agregar Cintas");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(AgregarCinta.class.getResource("/img/scot.png")));
-		setBounds(100, 100, 450, 340);
+		setBounds(100, 100, 519, 340);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.WHITE);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -85,12 +85,12 @@ public class AgregarCinta extends JFrame {
 		JButton btnVolver = new JButton("Volver");
 		btnVolver.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+
 				dispose();
 			}
 		});
 		contentPane.setLayout(null);
-		btnVolver.setBounds(335, 147, 89, 23);
+		btnVolver.setBounds(391, 110, 89, 23);
 		contentPane.add(btnVolver);
 
 		JLabel lblNewLabel = new JLabel("Modelo");
@@ -124,56 +124,56 @@ public class AgregarCinta extends JFrame {
 		btnGuarddar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-				PropertyConfigurator.configure("log4j.properties");
-				
-				Cinta cin = new Cinta();
+					PropertyConfigurator.configure("log4j.properties");
 
-				if (txtModelo.getText().length() > 0) {
-					if (txtMarca.getText().length() > 0) {
-						if (txtCate.getText().length() > 0) {
-							cin.setModelo(txtModelo.getText().toUpperCase());
-							cin.setMarca(txtMarca.getText().toUpperCase());
-							cin.setCategoria(txtCate.getText().toUpperCase());
-							Cont_Cinta CC = new Cont_Cinta();
+					Cinta cin = new Cinta();
 
-							ArrayList<Cinta> list = new ArrayList<>();
-							list = CC.listar();
+					if (txtModelo.getText().length() > 0) {
+						if (txtMarca.getText().length() > 0) {
+							if (txtCate.getText().length() > 0) {
+								cin.setModelo(txtModelo.getText().toUpperCase());
+								cin.setMarca(txtMarca.getText().toUpperCase());
+								cin.setCategoria(txtCate.getText().toUpperCase());
+								Cont_Cinta CC = new Cont_Cinta();
 
-							for (Cinta cinta : list) {
+								ArrayList<Cinta> list = new ArrayList<>();
+								list = CC.listar();
 
-								if (cinta.getModelo().equals(txtModelo.getText().toUpperCase())
-										&& cinta.getMarca().equals(txtMarca.getText().toUpperCase())) {
+								for (Cinta cinta : list) {
 
-									JOptionPane.showMessageDialog(null, "La cinta se Encuantra en la Lista");
-									return;
+									if (cinta.getModelo().equals(txtModelo.getText().toUpperCase())
+											&& cinta.getMarca().equals(txtMarca.getText().toUpperCase())) {
+
+										JOptionPane.showMessageDialog(null, "La cinta se Encuantra en la Lista");
+										return;
+									}
 								}
-							}
 
-							boolean valida = CC.IngresarCinta(cin);
+								boolean valida = CC.IngresarCinta(cin);
 
-							if (valida) {
-								JOptionPane.showMessageDialog(null, "Guardada");
-								log.info(sfd2.format(fecha.getTime()) + " Se Creao Nueva Cinta "+cin.toString());
-								txtCate.setText("");
-								txtMarca.setText("");
-								txtModelo.setText("");
-								
+								if (valida) {
+									JOptionPane.showMessageDialog(null, "Guardada");
+									log.info(sfd2.format(fecha.getTime()) + " Se Creao Nueva Cinta " + cin.toString());
+									txtCate.setText("");
+									txtMarca.setText("");
+									txtModelo.setText("");
+
+								} else {
+									JOptionPane.showMessageDialog(null, "No se Guardo");
+								}
 							} else {
-								JOptionPane.showMessageDialog(null, "No se Guardo");
+								JOptionPane.showMessageDialog(null, "Ingrese Categoria");
 							}
 						} else {
-							JOptionPane.showMessageDialog(null, "Ingrese Categoria");
+							JOptionPane.showMessageDialog(null, "Ingrese Marca");
 						}
 					} else {
-						JOptionPane.showMessageDialog(null, "Ingrese Marca");
+						JOptionPane.showMessageDialog(null, "Ingrese Modelo");
 					}
-				} else {
-					JOptionPane.showMessageDialog(null, "Ingrese Modelo");
-				}
-				LimpiarTabla();
-				llenarTabla();
-				}catch (Exception ex) {
-					log.error(sfd2.format(fecha.getTime()) + " -> "+ ex.getMessage());
+					LimpiarTabla();
+					llenarTabla();
+				} catch (Exception ex) {
+					log.error(sfd2.format(fecha.getTime()) + " -> " + ex.getMessage());
 					throw new IllegalArgumentException(ex.getMessage());
 				}
 			}
@@ -189,20 +189,32 @@ public class AgregarCinta extends JFrame {
 		jScrollPane1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		jScrollPane1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 
-		jScrollPane1.setBounds(56, 199, 308, 84);
+		jScrollPane1.setBounds(40, 162, 426, 118);
 		Tabla = new javax.swing.JTable();
+		Tabla.setSelectionBackground(Color.WHITE);
 		Tabla.setColumnSelectionAllowed(true);
 		Tabla.setCellSelectionEnabled(true);
-		Tabla.setAutoscrolls(false);
+		Tabla.setAutoscrolls(true);
 		Tabla.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		Tabla.setSurrendersFocusOnKeystroke(true);
 		Tabla.setAutoCreateRowSorter(true);
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
 
-		mod = new DefaultTableModel(new Object[][] {}, new String[] { "Codigo", "Modelo", "Marca", "Categoria" });
+		mod = new DefaultTableModel(new Object[][] {}, new String[] { "Codigo", "Modelo", "Marca", "Categoria" }) {
+			private static final long serialVersionUID = 1L;
+			boolean[] columnEditables = new boolean[] { false, false,false, false };
+
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+		};
 
 		Tabla.setModel(mod);
+		Tabla.getColumnModel().getColumn(0).setPreferredWidth(70);
+		Tabla.getColumnModel().getColumn(1).setPreferredWidth(110);
+		Tabla.getColumnModel().getColumn(2).setPreferredWidth(110);
+		Tabla.getColumnModel().getColumn(3).setPreferredWidth(110);
 
 		jScrollPane1.setViewportView(Tabla);
 		contentPane.setLayout(null);
