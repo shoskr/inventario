@@ -59,7 +59,7 @@ public class AgregarInventario extends JFrame {
 	private JDateChooser dateFult = new JDateChooser();
 	private final static Logger log = Logger.getLogger(AgregarInventario.class);
 	private Calendar fecha =  Calendar.getInstance();
-	private SimpleDateFormat sfd2 = new SimpleDateFormat(" dd/MM/YYYY - HH:mm:ss");
+	private SimpleDateFormat sfd2 = new SimpleDateFormat(" [dd/MM/YYYY] - [HH:mm:ss]");
 	
 	
 

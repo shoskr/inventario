@@ -46,7 +46,7 @@ public class AgregarUsuario extends JFrame {
 	private JComboBox<String> cboTipo;
 	private final static Logger log = Logger.getLogger(AgregarUsuario.class);
 	private Calendar fecha =  Calendar.getInstance();
-	private SimpleDateFormat sfd2 = new SimpleDateFormat(" dd/MM/YYYY - HH:mm:ss");
+	private SimpleDateFormat sfd2 = new SimpleDateFormat(" [dd/MM/YYYY] - [HH:mm:ss]");
 
 	/**
 	 * Launch the application.

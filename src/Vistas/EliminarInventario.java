@@ -59,7 +59,7 @@ public class EliminarInventario extends JFrame {
 	private JButton btnEliminarSeleccionado;
 	private final static Logger log = Logger.getLogger(EliminarInventario.class);
 	private Calendar fecha = Calendar.getInstance();
-	private SimpleDateFormat sfd2 = new SimpleDateFormat(" dd/MM/YYYY - HH:mm:ss");
+	private SimpleDateFormat sfd2 = new SimpleDateFormat(" [dd/MM/YYYY] - [HH:mm:ss]");
 
 	/**
 	 * Launch the application.

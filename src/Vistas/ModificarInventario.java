@@ -65,7 +65,7 @@ public class ModificarInventario extends JFrame {
 	private JTextField txtAnio;
 	private final static Logger log = Logger.getLogger(ModificarInventario.class);
 	private Calendar fecha =  Calendar.getInstance();
-	private SimpleDateFormat sfd2 = new SimpleDateFormat(" dd/MM/YYYY - HH:mm:ss");
+	private SimpleDateFormat sfd2 = new SimpleDateFormat(" [dd/MM/YYYY] - [HH:mm:ss]");
 
 
 	/**

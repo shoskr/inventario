@@ -51,7 +51,7 @@ public class AgregarCinta extends JFrame {
 	private JTable Tabla;
 	private final static Logger log = Logger.getLogger(AgregarCinta.class);
 	private Calendar fecha = Calendar.getInstance();
-	private SimpleDateFormat sfd2 = new SimpleDateFormat(" dd/MM/YYYY - HH:mm:ss");
+	private SimpleDateFormat sfd2 = new SimpleDateFormat(" [dd/MM/YYYY] - [HH:mm:ss]");
 
 	/**
 	 * Launch the application.

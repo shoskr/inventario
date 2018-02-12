@@ -48,7 +48,7 @@ public class ModificarUsuario extends JFrame {
 	private Connection conn = Conexion.getConnectio();
 	private final static Logger log = Logger.getLogger(ModificarUsuario.class);
 	private Calendar fecha =  Calendar.getInstance();
-	private SimpleDateFormat sfd2 = new SimpleDateFormat(" dd/MM/YYYY - HH:mm:ss");
+	private SimpleDateFormat sfd2 = new SimpleDateFormat(" [dd/MM/YYYY] - [HH:mm:ss]");
 
 
 	/**

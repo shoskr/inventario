@@ -35,7 +35,7 @@ public class EliminarUsuario extends JFrame {
 	private static EliminarUsuario frame;
 	private final static Logger log = Logger.getLogger(EliminarUsuario.class);
 	private Calendar fecha = Calendar.getInstance();
-	private SimpleDateFormat sfd2 = new SimpleDateFormat(" dd/MM/YYYY - HH:mm:ss");
+	private SimpleDateFormat sfd2 = new SimpleDateFormat(" [dd/MM/YYYY] - [HH:mm:ss]");
 
 	/**
 	 * Launch the application.

@@ -32,7 +32,7 @@ public class AgregarVarias extends JFrame {
 	private JTextField txtCant;
 	private final static Logger log = Logger.getLogger(AgregarVarias.class);
 	private Calendar fecha = Calendar.getInstance();
-	private SimpleDateFormat sfd2 = new SimpleDateFormat(" dd/MM/YYYY - HH:mm:ss");
+	private SimpleDateFormat sfd2 = new SimpleDateFormat(" [dd/MM/YYYY] - [HH:mm:ss]");
 	private SimpleDateFormat sdf = new SimpleDateFormat("YYYY/MM/dd");
 	private JComboBox<String> cboCinta;
 	/**

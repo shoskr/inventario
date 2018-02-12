@@ -71,7 +71,7 @@ public class Listar_Inventario extends JFrame {
 	private JTextField txtArchivo;
 	private final static Logger log = Logger.getLogger(Listar_Inventario.class);
 	private Calendar fecha =  Calendar.getInstance();
-	private SimpleDateFormat sfd2 = new SimpleDateFormat(" dd/MM/YYYY - HH:mm:ss");
+	private SimpleDateFormat sfd2 = new SimpleDateFormat(" [dd/MM/YYYY] - [HH:mm:ss]");
 
 	/**
 	 * Launch the application.

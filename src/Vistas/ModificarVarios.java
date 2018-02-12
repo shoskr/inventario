@@ -56,7 +56,7 @@ public class ModificarVarios extends JFrame {
 	private int cont = 0;
 	private final static Logger log = Logger.getLogger(ModificarVarios.class);
 	private Calendar fecha = Calendar.getInstance();
-	private SimpleDateFormat sfd2 = new SimpleDateFormat(" dd/MM/YYYY - HH:mm:ss");
+	private SimpleDateFormat sfd2 = new SimpleDateFormat(" [dd/MM/YYYY] - [HH:mm:ss]");
 	private SimpleDateFormat sdf = new SimpleDateFormat("YYYY/MM/dd");
 	private JComboBox<String> cboPlata, cboubicac, cboDesti, cboServ, cboPais, cboMes;
 	private JLabel lblMesYAo;
