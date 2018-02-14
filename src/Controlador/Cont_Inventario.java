@@ -4,13 +4,22 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 import Class.*;
-import Class.Conexion;
+import Vistas.AgregarInventario;
 
 public class Cont_Inventario {
 	private Connection conn = Conexion.getConnectio();
+	private final static Logger log = Logger.getLogger(AgregarInventario.class);
+	private Calendar fecha =  Calendar.getInstance();
+	private SimpleDateFormat sfd2 = new SimpleDateFormat(" [dd/MM/YYYY] - [HH:mm:ss]");
+
 
 	public boolean ingresarInventario(Inventario inv) {
 
@@ -44,6 +53,30 @@ public class Cont_Inventario {
 			throw new IllegalArgumentException(e.getMessage());
 		}
 
+	}
+
+	public ArrayList<Inventario> listInv(){
+		try {
+			PropertyConfigurator.configure("log4j.properties");
+			
+			String sql = "SELECT * FROM Inventario;";
+			
+            PreparedStatement stm = conn.prepareStatement(sql);
+            ResultSet rs = stm.executeQuery();
+            ArrayList<Inventario> list = new ArrayList<Inventario>();
+            while (rs.next()) {
+            	Inventario in = new Inventario();
+            	in.setIdInventario(rs.getString(1));
+            	
+                list.add(in);
+
+            }
+            return list;
+			
+		} catch (Exception e) {
+			log.error(sfd2.format(fecha.getTime()) + " -> "+ e.getMessage());
+			throw new IllegalArgumentException(e.getMessage());	
+		}
 	}
 
 	public ArrayList<Object[]> listar() {

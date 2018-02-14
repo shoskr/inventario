@@ -45,7 +45,7 @@ public class AgregarUsuario extends JFrame {
 	private Usuario usu = new Usuario();
 	private JComboBox<String> cboTipo;
 	private final static Logger log = Logger.getLogger(AgregarUsuario.class);
-	private Calendar fecha =  Calendar.getInstance();
+	private Calendar fecha = Calendar.getInstance();
 	private SimpleDateFormat sfd2 = new SimpleDateFormat(" [dd/MM/YYYY] - [HH:mm:ss]");
 
 	/**
@@ -122,47 +122,53 @@ public class AgregarUsuario extends JFrame {
 		btnGuardar.addActionListener(new ActionListener() {
 			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent e) {
-				PropertyConfigurator.configure("log4j.properties");
-				
-				int Tipo = cboTipo.getSelectedIndex();
-				String Nombre = txtusu.getText().toUpperCase();
-				ArrayList<Usuario> lista = new ArrayList<>();
-				lista = CU.listar();
+				try {
+					PropertyConfigurator.configure("log4j.properties");
 
-				for (Usuario usuario : lista) {
-					if (Nombre.equals(usuario.getNombre())) {
+					int Tipo = cboTipo.getSelectedIndex();
+					String Nombre = txtusu.getText().toUpperCase();
+					ArrayList<Usuario> lista = new ArrayList<>();
+					lista = CU.listar();
 
-						JOptionPane.showMessageDialog(null, "Usuario Existente");
-						return;
+					for (Usuario usuario : lista) {
+						if (Nombre.equals(usuario.getNombre())) {
+
+							JOptionPane.showMessageDialog(null, "Usuario Existente");
+							return;
+						}
 					}
-				}
 
-				if (Tipo > 0 && txtPass1.getText().length() >= 6 && txtPass1.getText().length() <= 20) {
-					if (txtPass1.getText().equals(txtPass2.getText())) {
-						String Pass = Code(txtPass1.getText());
-						usu = new Usuario();
-						usu.setNombre(Nombre);
-						usu.setClave(Pass);
-						usu.setTipo(Tipo);
-						CU.ingresarUsuario(usu);
-						JOptionPane.showMessageDialog(null, "Usuario Ingresado");
-						log.info(sfd2.format(fecha.getTime()) + " Se Agrega Un Usuario " + usu.getNombre() + " de Tipo "+  cboTipo.getSelectedItem() );
-						txtPass1.setText("");
-						txtPass2.setText("");
-						txtusu.setText("");
-						cboTipo.setSelectedIndex(0);
+					if (Tipo > 0 && txtPass1.getText().length() >= 6 && txtPass1.getText().length() <= 20) {
+						if (txtPass1.getText().equals(txtPass2.getText())) {
+							String Pass = Code(txtPass1.getText());
+							usu = new Usuario();
+							usu.setNombre(Nombre);
+							usu.setClave(Pass);
+							usu.setTipo(Tipo);
+							CU.ingresarUsuario(usu);
+							JOptionPane.showMessageDialog(null, "Usuario Ingresado");
+							log.info(sfd2.format(fecha.getTime()) + " Se Agrega Un Usuario " + usu.getNombre()
+									+ " de Tipo " + cboTipo.getSelectedItem());
+							txtPass1.setText("");
+							txtPass2.setText("");
+							txtusu.setText("");
+							cboTipo.setSelectedIndex(0);
+						} else {
+							JOptionPane.showMessageDialog(null, "No Coinciden Las Contraseñas");
+							txtPass1.setText("");
+							txtPass2.setText("");
+							txtusu.setText("");
+							cboTipo.setSelectedIndex(0);
+						}
 					} else {
-						JOptionPane.showMessageDialog(null, "No Coinciden Las Contraseñas");
-						txtPass1.setText("");
-						txtPass2.setText("");
-						txtusu.setText("");
-						cboTipo.setSelectedIndex(0);
+						JOptionPane.showMessageDialog(null, "Seleccione un Tipo de Usuario");
+						JOptionPane.showMessageDialog(null, "la contraseña debe tener entre 6 a 20 caracteres");
 					}
-				} else {
-					JOptionPane.showMessageDialog(null, "Seleccione un Tipo de Usuario");
-					JOptionPane.showMessageDialog(null, "la contraseña debe tener entre 6 a 20 caracteres");
-				}
 
+				} catch (Exception ex) {
+					log.error(sfd2.format(fecha.getTime()) + " -> " + ex.getMessage());
+					throw new IllegalArgumentException(ex.getMessage());
+				}
 			}
 		});
 		btnGuardar.setBounds(310, 42, 89, 23);
@@ -171,7 +177,7 @@ public class AgregarUsuario extends JFrame {
 		JButton btnVolver = new JButton("Volver");
 		btnVolver.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+
 				dispose();
 
 			}

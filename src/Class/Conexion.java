@@ -9,10 +9,10 @@ public class Conexion {
 
 	public static Connection getConnectio() {
 		try {
-
+//"jdbc:sqlserver://CLS1531135779O\\SQLEXPRESS;databaseName=InventarioCinta", "sa", "106721Oscar"
 			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-
-			conn = DriverManager.getConnection(
+//
+			conn = DriverManager.getConnection(  
 					"jdbc:sqlserver://CLS1531135779O\\SQLEXPRESS;databaseName=InventarioCinta", "sa", "106721Oscar");
 
 		} catch (Exception ex) {

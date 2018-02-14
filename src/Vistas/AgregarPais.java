@@ -98,6 +98,7 @@ public class AgregarPais extends JFrame {
 		JButton button_1 = new JButton("Guardar");
 		button_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				try {
 				PropertyConfigurator.configure("log4j.properties");
 				if (txtPais.getText().length() > 0) {
 					Pais pa = new Pais();
@@ -128,7 +129,10 @@ public class AgregarPais extends JFrame {
 				}
 				LimpiarTabla();
 				llenarTabla();
-
+				}catch (Exception ex) {
+					log.error(sfd2.format(fecha.getTime()) + " -> " + ex.getMessage());
+					throw new IllegalArgumentException(ex.getMessage());
+				}
 			}
 		});
 		button_1.setBounds(46, 73, 113, 28);

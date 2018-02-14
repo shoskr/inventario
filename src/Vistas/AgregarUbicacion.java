@@ -109,7 +109,7 @@ public class AgregarUbicacion extends JFrame {
 		JButton btnGuardar = new JButton("Guardar");
 		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String ubic = txtUbi.getText().toUpperCase();
+			try {	String ubic = txtUbi.getText().toUpperCase();
 				PropertyConfigurator.configure("log4j.properties");
 				if (ubic.length() > 0) {
 					Cont_Ubicacion cnubi = new Cont_Ubicacion();
@@ -145,6 +145,10 @@ public class AgregarUbicacion extends JFrame {
 					JOptionPane.showMessageDialog(null, "Ingresar Ubicacion");
 				}
 
+			}catch (Exception ex) {
+				log.error(sfd2.format(fecha.getTime()) + " -> " + ex.getMessage());
+				throw new IllegalArgumentException(ex.getMessage());
+			}
 			}
 		});
 		btnGuardar.setBounds(31, 71, 113, 28);

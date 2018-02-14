@@ -273,10 +273,20 @@ public class AgregarInventario extends JFrame {
 					}
 
 					
-
-					Cont_Inventario CI = new Cont_Inventario();
 					Inventario inv = new Inventario();
+					Cont_Inventario CI = new Cont_Inventario();
+					ArrayList<Inventario> list = new ArrayList<>();
+					list = CI.listInv();
+					
 					String idInventario = txtcod.getText().toUpperCase();
+					for (Inventario inventario : list) {
+						if(idInventario.equals(inventario.getIdInventario())) {
+							JOptionPane.showMessageDialog(null, "Codigo ya existente");
+							return;
+						}
+					}
+					
+					
 					String idCinta[] = ((String) cboCinta.getSelectedItem()).split("-");
 					String idC = idCinta[0].replaceAll(" ", "");
 					int Cinta_idCinta = 0;
@@ -472,6 +482,42 @@ public class AgregarInventario extends JFrame {
 		txtAnio.setBounds(764, 216, 46, 20);
 		contentPane.add(txtAnio);
 		txtAnio.setColumns(10);
+		
+		JLabel lblTodosLosRecuadros = new JLabel("Todos los recuadros marcados con (*) deben ser completados obligatoriamente");
+		lblTodosLosRecuadros.setBounds(17, 302, 500, 14);
+		contentPane.add(lblTodosLosRecuadros);
+		
+		JLabel label_1 = new JLabel("(*)");
+		label_1.setBounds(353, 9, 25, 14);
+		contentPane.add(label_1);
+		
+		JLabel label_2 = new JLabel("(*)");
+		label_2.setBounds(353, 35, 25, 14);
+		contentPane.add(label_2);
+		
+		JLabel label_3 = new JLabel("(*)");
+		label_3.setBounds(353, 120, 25, 14);
+		contentPane.add(label_3);
+		
+		JLabel label_4 = new JLabel("(*)");
+		label_4.setBounds(353, 231, 25, 14);
+		contentPane.add(label_4);
+		
+		JLabel label_5 = new JLabel("(*)");
+		label_5.setBounds(353, 264, 25, 14);
+		contentPane.add(label_5);
+		
+		JLabel label_6 = new JLabel("(*)");
+		label_6.setBounds(752, 13, 25, 14);
+		contentPane.add(label_6);
+		
+		JLabel label_7 = new JLabel("(*)");
+		label_7.setBounds(752, 163, 25, 14);
+		contentPane.add(label_7);
+		
+		JLabel label_8 = new JLabel("(*)");
+		label_8.setBounds(752, 259, 25, 14);
+		contentPane.add(label_8);
 
 		CargarCbos();
 	}

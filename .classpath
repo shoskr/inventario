@@ -19,5 +19,7 @@
 	<classpathentry kind="lib" path="C:/Users/overgarah/eclipse-workspace/InventarioCintas/lib/poi-3.7.jar"/>
 	<classpathentry kind="lib" path="C:/Users/overgarah/eclipse-workspace/InventarioCintas/lib/poi-3.9-20121203.jar"/>
 	<classpathentry kind="lib" path="C:/Users/overgarah/eclipse-workspace/InventarioCintas/sqljdbc_6.0/enu/jre8/sqljdbc42.jar"/>
+	<classpathentry kind="lib" path="sqljdbc_6.0/enu/jre8/sqljdbc42.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Java/jre1.8.0_151/bin/sqljdbc42.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -115,8 +115,8 @@ public class EliminarInventario extends JFrame {
 						"Responsable", "Servidor", "Lugar Requerido", "Mes y Año", "Estado" }) {
 
 			private static final long serialVersionUID = 1L;
-			boolean[] columnEditables = new boolean[] { false, false, false, false, false, false, false, false, false, false,
-					false, false, false, false, false, false, false, false, false, false, false, false, };
+			boolean[] columnEditables = new boolean[] { false, false, false, false, false, false, false, false, false,
+					false, false, false, false, false, false, false, false, false, false, false, false, false, };
 
 			public boolean isCellEditable(int row, int column) {
 				return columnEditables[column];
@@ -147,7 +147,7 @@ public class EliminarInventario extends JFrame {
 		Tabla.getColumnModel().getColumn(19).setPreferredWidth(110);
 		Tabla.getColumnModel().getColumn(20).setPreferredWidth(140);
 		Tabla.getColumnModel().getColumn(21).setPreferredWidth(100);
-		
+
 		jScrollPane1.setViewportView(Tabla);
 		contentPane.setLayout(null);
 
@@ -157,39 +157,44 @@ public class EliminarInventario extends JFrame {
 		JButton btnBuscar = new JButton("Buscar Codigo");
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				try {
+					String Cod = txtCod.getText().trim().toUpperCase();
+					if (Cod.length() != 0) {
 
-				String Cod = txtCod.getText().trim().toUpperCase();
-				if (Cod.length() != 0) {
-
-					if (Tabla.getModel().getRowCount() != 0) {
-						int ax = JOptionPane.showConfirmDialog(null, "Desea Eliminar Busqueda Anterior");
-						if (ax == JOptionPane.YES_OPTION) {
-							limipar();
-						}
-					}
-					boolean valida = buscarinv(Cod);
-					if (valida) {
-
-					} else {
-						boolean valida2 = buscarAnt(Cod);
-						if (valida2) {
-
-						} else {
-							boolean valida3 = buscar(Cod);
-							if (valida3) {
-
+						if (Tabla.getModel().getRowCount() != 0) {
+							int ax = JOptionPane.showConfirmDialog(null, "Desea Eliminar Busqueda Anterior");
+							if (ax == JOptionPane.YES_OPTION) {
+								limipar();
 							}
 						}
+						boolean valida = buscarinv(Cod);
+						if (valida) {
 
+						} else {
+							boolean valida2 = buscarAnt(Cod);
+							if (valida2) {
+
+							} else {
+								boolean valida3 = buscar(Cod);
+								if (valida3) {
+
+								}
+							}
+
+						}
+
+						txtCont.setText("" + cont);
+
+						txtCod.setText("");
+
+					} else {
+						JOptionPane.showMessageDialog(null, "Ingrese la cinta para eliminar");
 					}
 
-					txtCont.setText("" + cont);
-
-					txtCod.setText("");
-
-				} else {
-					JOptionPane.showMessageDialog(null, "Ingrese la cinta para eliminar");
+				} catch (Exception e) {
+					throw new IllegalArgumentException(e.getMessage());
 				}
+
 			}
 		});
 		btnBuscar.setBounds(168, 293, 139, 23);
@@ -202,10 +207,14 @@ public class EliminarInventario extends JFrame {
 
 		btnLimpiar = new JButton("Limpiar");
 		btnLimpiar.addActionListener(new ActionListener() {
-
 			public void actionPerformed(ActionEvent arg0) {
-				limipar();
+				try {
+					limipar();
 
+				} catch (Exception e) {
+					log.error(sfd2.format(fecha.getTime()) + e.getMessage());
+					throw new IllegalArgumentException(e.getMessage());
+				}
 			}
 		});
 		btnLimpiar.setBounds(574, 11, 89, 23);
@@ -248,20 +257,26 @@ public class EliminarInventario extends JFrame {
 		JButton btnBuscar_1 = new JButton("Buscar");
 		btnBuscar_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String desde = sdf.format(Desde.getDate());
-				String Hastaa = sdf.format(Hasta.getDate());
+				try {
+					String desde = sdf.format(Desde.getDate());
+					String Hastaa = sdf.format(Hasta.getDate());
 
-				if (Tabla.getModel().getRowCount() != 0) {
-					int ax = JOptionPane.showConfirmDialog(null, "Desea Eliminar Busqueda Anterior");
-					if (ax == JOptionPane.YES_OPTION) {
-						limipar();
+					if (Tabla.getModel().getRowCount() != 0) {
+						int ax = JOptionPane.showConfirmDialog(null, "Desea Eliminar Busqueda Anterior");
+						if (ax == JOptionPane.YES_OPTION) {
+							limipar();
+						}
 					}
-				}
-				buscarFechas(desde, Hastaa);
-				txtCont.setText("" + cont);
+					buscarFechas(desde, Hastaa);
+					txtCont.setText("" + cont);
 
-				Desde.setCalendar(null);
-				Hasta.setCalendar(null);
+					Desde.setCalendar(null);
+					Hasta.setCalendar(null);
+
+				} catch (Exception e2) {
+					throw new IllegalArgumentException(e2.getMessage());
+				}
+
 			}
 		});
 		btnBuscar_1.setBounds(478, 423, 142, 23);
@@ -282,11 +297,15 @@ public class EliminarInventario extends JFrame {
 		JButton btnQuitar = new JButton("Quitar");
 		btnQuitar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				try {
+					mod.removeRow(Tabla.getSelectedRow());
 
-				mod.removeRow(Tabla.getSelectedRow());
+					cont = cont - 1;
+					txtCont.setText("" + cont);
 
-				cont = cont - 1;
-				txtCont.setText("" + cont);
+				} catch (Exception e) {
+					throw new IllegalArgumentException(e.getMessage());
+				}
 			}
 		});
 		btnQuitar.setBounds(468, 10, 94, 24);
@@ -612,23 +631,23 @@ public class EliminarInventario extends JFrame {
 		}
 	}
 
-	private boolean ModifDeBAja(String cod ) {
+	private boolean ModifDeBAja(String cod) {
 		try {
-			
+
 			String fech = sdf.format(fecha.getTime());
-			
-			String sql = "update Inventario set Fecha_ultim = '"+fech+"', estado = 'DE BAJA' where idInventario =? ";
+
+			String sql = "update Inventario set Fecha_ultim = '" + fech
+					+ "', estado = 'DE BAJA' where idInventario =? ";
 
 			PreparedStatement pstm = conn.prepareCall(sql);
 			pstm.setString(1, cod);
-			
 
 			int x = pstm.executeUpdate();
 			return x > 0 ? true : false;
 
 		} catch (Exception e) {
 			throw new IllegalArgumentException(e.getMessage());
-			
+
 		}
 	}
 

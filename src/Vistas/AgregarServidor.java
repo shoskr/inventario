@@ -98,6 +98,7 @@ public class AgregarServidor extends JFrame {
 		JButton button_1 = new JButton("Guardar");
 		button_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+			try {
 				PropertyConfigurator.configure("log4j.properties");
 
 				Servidor servi = new Servidor();
@@ -129,7 +130,10 @@ public class AgregarServidor extends JFrame {
 				}
 				LimpiarTabla();
 				llenarTabla();
-
+			}catch (Exception ex) {
+				log.error(sfd2.format(fecha.getTime()) + " -> " + ex.getMessage());
+				throw new IllegalArgumentException(ex.getMessage());
+			}
 			}
 		});
 		button_1.setBounds(39, 78, 113, 28);
