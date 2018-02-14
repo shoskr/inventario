@@ -55,7 +55,6 @@ public class AgregarVarias extends JFrame {
 	 * Create the frame.
 	 */
 	public AgregarVarias() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 512, 241);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -107,8 +106,16 @@ public class AgregarVarias extends JFrame {
 					int can = Integer.parseInt(txtCant.getText());
 					
 					int cinta = cboCinta.getSelectedIndex();
+					Calendar c1 = Calendar.getInstance();
+					c1.add(Calendar.YEAR, 10);
+					String FechUl = sdf.format(c1.getTime());
 					
 					ArrayList<Inventario> list = new ArrayList<>();
+					
+					if(cboCinta.getSelectedIndex()==0) {
+						JOptionPane.showMessageDialog(null, "Debe Seleccionar un modelo de Cinta");
+						return;
+					}
 					
 					
 					String Ultima ="";
@@ -141,9 +148,9 @@ public class AgregarVarias extends JFrame {
 						inv.setPlataforma(1);
 						inv.setPais_idPais(1);
 						inv.setFecha_Plataforma(sdf.format(fecha.getTime()));
-						inv.setFecha_Exp(sdf.format(fecha.getTime()));
+						inv.setFecha_Exp(FechUl);
 						inv.setFecha_ultim(sdf.format(fecha.getTime()));
-						inv.setFecha_Exp(sdf.format(fecha.getTime()));
+						inv.setFecha_Plataforma(sdf.format(fecha.getTime()));
 						inv.setUbicacion_Bodega(1);
 						inv.setDestino_Actual(1);
 						inv.setServidor(1);
@@ -152,7 +159,7 @@ public class AgregarVarias extends JFrame {
 						for (Inventario inventario : list) {
 							if(inv.getIdInventario().equals(inventario.getIdInventario())) {
 								JOptionPane.showMessageDialog(null, "Cinta ya Ingresada " + inventario.getIdInventario());
-							return;
+							log.error(sfd2.format(fecha.getTime()) + " Se  trata de ingresar una cinta que ya existente  " + inventario.getIdInventario());
 							}
 						}
 						
@@ -169,9 +176,10 @@ public class AgregarVarias extends JFrame {
 					txtCant.setText("");
 					txtLetras.setText("");
 					txtRangoIni.setText("");
+					cboCinta.setSelectedIndex(0);
 
 				} catch (Exception e) {
-					log.error(sfd2.format(fecha.getTime()) + " -> "+ e.getMessage());
+					log.error(sfd2.format(fecha.getTime()) + e.getMessage());
 					throw new IllegalArgumentException(e.getMessage());
 				}
 

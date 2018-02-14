@@ -446,7 +446,7 @@ public class ModificarInventario extends JFrame {
 
 		cboEstado = new JComboBox<String>();
 		cboEstado.setModel(new DefaultComboBoxModel<String>(
-				new String[] { "DISPONIBLE", "ALMACENADA", "EN TRANCITO", "DE BAJA" }));
+				new String[] { "DISPONIBLE", "ALMACENADA", "EN TRANCITO" }));
 		cboEstado.setBounds(491, 266, 137, 20);
 		contentPane.add(cboEstado);
 

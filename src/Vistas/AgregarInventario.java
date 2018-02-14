@@ -34,6 +34,7 @@ import Class.*;
 import Controlador.*;
 import java.awt.Cursor;
 import java.awt.Color;
+import java.awt.Font;
 
 public class AgregarInventario extends JFrame {
 
@@ -52,7 +53,7 @@ public class AgregarInventario extends JFrame {
 	private JTextField txtSoli;
 	private JTextField txtresp;
 	private JTextField txtLug;
-	private static JComboBox<String> cboCinta, cboPlat, cboUbicacion, cboPais, cboServ, cbodesti, cboAnio, cbomes, cboEstado;
+	private static JComboBox<String> cboCinta, cboPlat, cboUbicacion, cboPais, cboServ, cbodesti, cbomes, cboEstado;
 	private static SimpleDateFormat sdf = new SimpleDateFormat("YYYY/MM/dd");
 	private JDateChooser datefPlat = new JDateChooser();
 	private JDateChooser dateFExp = new JDateChooser();
@@ -60,6 +61,7 @@ public class AgregarInventario extends JFrame {
 	private final static Logger log = Logger.getLogger(AgregarInventario.class);
 	private Calendar fecha =  Calendar.getInstance();
 	private SimpleDateFormat sfd2 = new SimpleDateFormat(" [dd/MM/YYYY] - [HH:mm:ss]");
+	private JTextField txtAnio;
 	
 	
 
@@ -270,10 +272,7 @@ public class AgregarInventario extends JFrame {
 						return;
 					}
 
-					if (cboAnio.getSelectedIndex() == 0) {
-						JOptionPane.showMessageDialog(null, "Debe Seleccionar Un Año");
-						return;
-					}
+					
 
 					Cont_Inventario CI = new Cont_Inventario();
 					Inventario inv = new Inventario();
@@ -348,7 +347,7 @@ public class AgregarInventario extends JFrame {
 					;
 
 					String Lugar_Requerido = txtLug.getText().toUpperCase();
-					String mes_anio = cbomes.getSelectedItem() + " - " + cboAnio.getSelectedItem();
+					String mes_anio = cbomes.getSelectedItem() + " - " + txtAnio.getText();
 					String estado = cboEstado.getSelectedItem()+"";
 
 					inv.setIdInventario(idInventario);
@@ -458,10 +457,6 @@ public class AgregarInventario extends JFrame {
 				"JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "NOVIEMBRE", "DICIOEMBRE" }));
 		cbomes.setBounds(548, 216, 194, 21);
 		contentPane.add(cbomes);
-
-		cboAnio = new JComboBox<String>();
-		cboAnio.setBounds(754, 216, 62, 21);
-		contentPane.add(cboAnio);
 		
 		JLabel lblEstadoCinta = new JLabel("Estado Cinta");
 		lblEstadoCinta.setBounds(417, 259, 75, 14);
@@ -471,6 +466,12 @@ public class AgregarInventario extends JFrame {
 		cboEstado.setModel(new DefaultComboBoxModel<String>(new String[] {"DISPONIBLE", "ALMACENADO", "EN TRANCITO", "DE BAJA"}));
 		cboEstado.setBounds(548, 256, 194, 20);
 		contentPane.add(cboEstado);
+		
+		txtAnio = new JTextField();
+		txtAnio.setFont(new Font("Tahoma", Font.BOLD, 11));
+		txtAnio.setBounds(764, 216, 46, 20);
+		contentPane.add(txtAnio);
+		txtAnio.setColumns(10);
 
 		CargarCbos();
 	}
@@ -478,6 +479,11 @@ public class AgregarInventario extends JFrame {
 	private void CargarCbos() {
 
 		// Se cargan los cbo.
+		
+		SimpleDateFormat sd = new SimpleDateFormat("YYYY");
+		SimpleDateFormat sd2 = new SimpleDateFormat("MM");
+
+		txtAnio.setText(sd.format(fecha.getTime()));
 
 		cboCinta.addItem("Seleccionar");
 		cbodesti.addItem("Seleccionar");
@@ -485,15 +491,10 @@ public class AgregarInventario extends JFrame {
 		cboPlat.addItem("Seleccionar");
 		cboServ.addItem("Seleccionar");
 		cboUbicacion.addItem("Seleccionar");
-		cboAnio.addItem("Año");
 		
 
-		for (int i = 1999; i <= 2099; i++) {
-			cboAnio.addItem("" + i);
-		}
-
-		cboAnio.setSelectedIndex(0);
-		cbomes.setSelectedIndex(0);
+		
+		cbomes.setSelectedIndex(Integer.parseInt(sd2.format(fecha.getTime())));
 
 		Cont_Cinta CC = new Cont_Cinta();
 		Cont_Pais CP = new Cont_Pais();
@@ -537,9 +538,12 @@ public class AgregarInventario extends JFrame {
 		}
 
 		Calendar fecha = Calendar.getInstance();
+		Calendar c1 = Calendar.getInstance();
+		c1.add(Calendar.YEAR, 10);
+		 
 
 		datefPlat.setDate(fecha.getTime());
-		dateFExp.setDate(fecha.getTime());
+		dateFExp.setDate(c1.getTime());
 		dateFult.setDate(fecha.getTime());
 
 	}

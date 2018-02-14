@@ -126,6 +126,10 @@ public class Login extends JFrame {
 								men.setVisible(true);
 								dispose();
 
+							}else if(acceso == 3) {
+								menuUsuarios mu = new menuUsuarios();
+								mu.setVisible(true);
+								dispose();
 							}
 
 						} else {

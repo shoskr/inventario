@@ -146,7 +146,7 @@ public class AgregarUsuario extends JFrame {
 						usu.setTipo(Tipo);
 						CU.ingresarUsuario(usu);
 						JOptionPane.showMessageDialog(null, "Usuario Ingresado");
-						log.info(sfd2.format(fecha.getTime()) + " Se Agrega Un Usuario " + usu.getNombre() + "de Tipo "+  cboTipo.getSelectedItem() );
+						log.info(sfd2.format(fecha.getTime()) + " Se Agrega Un Usuario " + usu.getNombre() + " de Tipo "+  cboTipo.getSelectedItem() );
 						txtPass1.setText("");
 						txtPass2.setText("");
 						txtusu.setText("");

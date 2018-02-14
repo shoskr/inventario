@@ -250,16 +250,16 @@ public class ModificarVarios extends JFrame {
 					int serv = cboServ.getSelectedIndex() + 1;
 					String fech = sdf.format(fecha.getTime());
 
-					int Anio = Integer.parseInt(txtAnio.getText());
+					int Anio = Integer.parseInt(txtAnio.getText().trim());
 
-					if (Anio < 1980 && Anio > 2150) {
+					if (Anio >= 1980 && Anio <= 2150) {
+						
+					}else {
 						JOptionPane.showMessageDialog(null, "Año Fuera de rango");
 						return;
 					}
 
-					Calendar c1 = Calendar.getInstance();
-					c1.add(Calendar.YEAR, 10);
-					String FechUl = sdf.format(c1.getTime());
+					
 					String MesAnio = cboMes.getSelectedItem() + " - " + Anio;
 					String Estado = cboEstado.getSelectedItem() + "";
 
@@ -286,22 +286,23 @@ public class ModificarVarios extends JFrame {
 						String Luga = String.valueOf(((String) tm.getValueAt(i, 19)).toUpperCase()) + " ";
 						inv.setLugar_Requerido(Luga);
 
-						boolean valida = ActualizarInventario(inv, cod, plat, FechUl, fech, pais, ubi, destino, serv,
+						boolean valida = ActualizarInventario(inv, cod, plat,  fech, pais, ubi, destino, serv,
 								MesAnio, Estado);
 						if (valida) {
 							log.warn(sfd2.format(fecha.getTime()) + " Se modifica la cinta " + cod);
 						}
 
 					}
-					JOptionPane.showMessageDialog(null, "Se modificoaro Las tablas");
+					JOptionPane.showMessageDialog(null, "Se modificoaron Las tablas");
 
 					cboDesti.setSelectedIndex(0);
-					cboMes.setSelectedIndex(0);
 					cboPais.setSelectedIndex(0);
 					cboServ.setSelectedIndex(0);
 					cboubicac.setSelectedIndex(0);
 					cboPlata.setSelectedIndex(0);
 					cboEstado.setSelectedIndex(0);
+					SimpleDateFormat sd2 = new SimpleDateFormat("MM");
+					cboMes.setSelectedIndex(Integer.parseInt(sd2.format(fecha.getTime()))-1);
 					limipar();
 
 				} catch (Exception ex) {
@@ -370,7 +371,7 @@ public class ModificarVarios extends JFrame {
 
 		cboEstado = new JComboBox<Object>();
 		cboEstado.setModel(new DefaultComboBoxModel<Object>(
-				new String[] { "DISPONIBLE", "ALMACENADO", "EN TRANCITO", "DE BAJA" }));
+				new String[] { "DISPONIBLE", "ALMACENADO", "EN TRANCITO" }));
 		cboEstado.setBounds(452, 506, 149, 20);
 		contentPane.add(cboEstado);
 
@@ -520,12 +521,12 @@ public class ModificarVarios extends JFrame {
 
 	}
 
-	public boolean ActualizarInventario(Inventario inv, String cod, int plat, String fech, String fechUl, int pais,
+	public boolean ActualizarInventario(Inventario inv, String cod, int plat,  String fechUl, int pais,
 			int ubi, int dest, int serv, String mesAni, String esta) {
 
 		try {
 			String sql = "update Inventario \n" + "set Contenido = ?,\n" + "retencion = ?,\n"
-					+ "Plataforma_idPlataforma = ?,\n" + "Fecha_Exp = ?,\n" + "Fecha_ultim = ?,\n"
+					+ "Plataforma_idPlataforma = ?,\n"  + "Fecha_ultim = ?,\n"
 					+ "Pais_idPais = ?,\n" + "Ubicacion_Bodega = ?,\n" + "Destino_Actual = ?,\n" + "Valija = ?,\n"
 					+ "Continuacion = ?,\n" + "Observaciones = ?,\n" + "Solicitado = ?,\n" + "Responsable = ?,\n"
 					+ "Servidor_idServidor =?,\n" + "Lugar_Requerido = ?,\n" + "mes_anio = ?,\n" + "Estado = ?\n"
@@ -536,21 +537,20 @@ public class ModificarVarios extends JFrame {
 			pstm.setString(1, inv.getContenido());
 			pstm.setString(2, inv.getRetencion());
 			pstm.setInt(3, plat);
-			pstm.setString(4, fech);
-			pstm.setString(5, fechUl);
-			pstm.setInt(6, pais);
-			pstm.setInt(7, ubi);
-			pstm.setInt(8, dest);
-			pstm.setString(9, inv.getValija());
-			pstm.setString(10, inv.getContinuacion());
-			pstm.setString(11, inv.getObservaciones());
-			pstm.setString(12, inv.getSolicitado());
-			pstm.setString(13, inv.getResponsable());
-			pstm.setInt(14, serv);
-			pstm.setString(15, inv.getLugar_Requerido());
-			pstm.setString(16, mesAni);
-			pstm.setString(17, esta);
-			pstm.setString(18, cod);
+			pstm.setString(4, fechUl);
+			pstm.setInt(5, pais);
+			pstm.setInt(6, ubi);
+			pstm.setInt(7, dest);
+			pstm.setString(8, inv.getValija());
+			pstm.setString(9, inv.getContinuacion());
+			pstm.setString(10, inv.getObservaciones());
+			pstm.setString(11, inv.getSolicitado());
+			pstm.setString(12, inv.getResponsable());
+			pstm.setInt(13, serv);
+			pstm.setString(14, inv.getLugar_Requerido());
+			pstm.setString(15, mesAni);
+			pstm.setString(16, esta);
+			pstm.setString(17, cod);
 
 			int x = pstm.executeUpdate();
 			return x > 0 ? true : false;
@@ -564,6 +564,8 @@ public class ModificarVarios extends JFrame {
 	private void CargarCbos() {
 
 		SimpleDateFormat sd = new SimpleDateFormat("YYYY");
+		SimpleDateFormat sd2 = new SimpleDateFormat("MM");
+		cboMes.setSelectedIndex(Integer.parseInt(sd2.format(fecha.getTime()))-1);
 
 		txtAnio.setText(sd.format(fecha.getTime()));
 

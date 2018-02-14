@@ -7,7 +7,7 @@ public class Run {
 		Inicio ini = new Inicio();
 		ini.setVisible(true);
 		
-		
+		//  %5p %c{1}:%L  %m %n
 
 	}
 

@@ -73,7 +73,7 @@ public class ModificarUsuario extends JFrame {
 	public ModificarUsuario() {
 		setTitle("Modificar Usuario");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(ModificarUsuario.class.getResource("/img/scot.png")));
-		setBounds(100, 100, 332, 322);
+		setBounds(100, 100, 352, 322);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.WHITE);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -82,25 +82,25 @@ public class ModificarUsuario extends JFrame {
 
 		txtUsu = new JTextField();
 		txtUsu.setEditable(false);
-		txtUsu.setBounds(159, 35, 116, 20);
+		txtUsu.setBounds(195, 35, 116, 20);
 		contentPane.add(txtUsu);
 		txtUsu.setColumns(10);
 
 		JLabel lblUsuario = new JLabel("Usuario                 :");
-		lblUsuario.setBounds(13, 35, 103, 14);
+		lblUsuario.setBounds(13, 35, 128, 14);
 		contentPane.add(lblUsuario);
 
 		txtpss = new JPasswordField();
-		txtpss.setBounds(159, 66, 116, 20);
+		txtpss.setBounds(195, 66, 116, 20);
 		contentPane.add(txtpss);
 
 		JLabel lblClave = new JLabel(" Clave                   :");
-		lblClave.setBounds(13, 66, 103, 14);
+		lblClave.setBounds(13, 66, 128, 14);
 		contentPane.add(lblClave);
 
 		JComboBox<String> cboTipo = new JComboBox<String>();
 		cboTipo.setModel(new DefaultComboBoxModel<String>(new String[] { "Sleccione" }));
-		cboTipo.setBounds(159, 116, 116, 20);
+		cboTipo.setBounds(195, 116, 116, 20);
 		contentPane.add(cboTipo);
 
 		ArrayList<Object> lista = new ArrayList<>();
@@ -110,7 +110,7 @@ public class ModificarUsuario extends JFrame {
 		}
 
 		JLabel lblTipoUsuario = new JLabel("Tipo Usuario         :");
-		lblTipoUsuario.setBounds(13, 116, 116, 14);
+		lblTipoUsuario.setBounds(13, 116, 128, 14);
 		contentPane.add(lblTipoUsuario);
 
 		JComboBox<String> cboUsu = new JComboBox<String>();
@@ -153,11 +153,11 @@ public class ModificarUsuario extends JFrame {
 				}
 			}
 		});
-		btnNewButton.setBounds(13, 195, 262, 23);
+		btnNewButton.setBounds(13, 195, 298, 23);
 		contentPane.add(btnNewButton);
 
 		JLabel lblReingresarClave = new JLabel(" reingresar clave  :");
-		lblReingresarClave.setBounds(13, 91, 103, 14);
+		lblReingresarClave.setBounds(13, 91, 128, 14);
 		contentPane.add(lblReingresarClave);
 
 		JButton btnBuscar = new JButton("Seleccionar");
@@ -182,11 +182,11 @@ public class ModificarUsuario extends JFrame {
 				}
 			}
 		});
-		btnBuscar.setBounds(159, 160, 116, 23);
+		btnBuscar.setBounds(195, 160, 116, 23);
 		contentPane.add(btnBuscar);
 
 		txtpass2 = new JPasswordField();
-		txtpass2.setBounds(159, 91, 116, 20);
+		txtpass2.setBounds(195, 91, 116, 20);
 		contentPane.add(txtpass2);
 		
 		JButton btnVolver = new JButton("Volver");

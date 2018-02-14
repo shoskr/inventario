@@ -218,12 +218,17 @@ public class Listar_Inventario extends JFrame {
 
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-
+					if(txtArchivo.getText().trim().length()==0) {
+						JOptionPane.showMessageDialog(null, " Debe Asignar un nombre Al archivo Generado ");
+						return;
+						
+					}
+					
 					PropertyConfigurator.configure("log4j.properties");
 					
 					String nombre = txtArchivo.getText().trim();
 
-					String rutaArchivo = System.getProperty("user.home") + "/Desktop/" + nombre + ".xls";
+					String rutaArchivo = "C:/AppInventarioCinta/Planillas/" + nombre + ".xls";
 
 					File archivoXLS = new File(rutaArchivo);
 
@@ -255,15 +260,16 @@ public class Listar_Inventario extends JFrame {
 						}
 
 					}
-					log.info(sfd2.format(fecha.getTime())+ "Se crea Un achivo  en "+ rutaArchivo );
+					log.info(sfd2.format(fecha.getTime())+ " Se crea Un achivo  en "+ rutaArchivo );
 
 					libro.write(archivo);
 					archivo.close();
-					JOptionPane.showMessageDialog(null, "Ruta de archivo " + rutaArchivo);
+					JOptionPane.showMessageDialog(null, " Ruta de archivo " + rutaArchivo);
 					Desktop.getDesktop().open(archivoXLS);
 
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(null, "Error" + e.getMessage());
+					log.info(sfd2.format(fecha.getTime())+e.getMessage());
 				}
 
 			}

@@ -292,7 +292,7 @@ public class EliminarInventario extends JFrame {
 		btnQuitar.setBounds(468, 10, 94, 24);
 		contentPane.add(btnQuitar);
 
-		JButton btnNewButton = new JButton("Eliminar lista");
+		JButton btnNewButton = new JButton("Dar de Baja lista");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				PropertyConfigurator.configure("log4j.properties");
@@ -347,7 +347,7 @@ public class EliminarInventario extends JFrame {
 				if (Tabla.getModel().getRowCount() != 0) {
 
 					int axi2 = JOptionPane.showConfirmDialog(null,
-							"Precione Si para eliminar, No Para dar de Baja, o solo cancele la operacion  ");
+							"Presione Si para eliminar, No Para dar de Baja, o cancele la operacion para no efectuar nada ");
 					if (axi2 == JOptionPane.YES_OPTION) {
 						int ax = JOptionPane.showConfirmDialog(null,
 								"Se Eliminara la Cinta numero  " + cod + " , Esta seguro");
@@ -617,16 +617,18 @@ public class EliminarInventario extends JFrame {
 			
 			String fech = sdf.format(fecha.getTime());
 			
-			String sql = "update Inventario set Fecha_ultim = '"+ fech +"' estado = 'DE BAJA' where idInventario =? ";
+			String sql = "update Inventario set Fecha_ultim = '"+fech+"', estado = 'DE BAJA' where idInventario =? ";
 
 			PreparedStatement pstm = conn.prepareCall(sql);
 			pstm.setString(1, cod);
+			
 
 			int x = pstm.executeUpdate();
 			return x > 0 ? true : false;
 
 		} catch (Exception e) {
 			throw new IllegalArgumentException(e.getMessage());
+			
 		}
 	}
 
